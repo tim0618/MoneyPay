@@ -1,13 +1,23 @@
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.SqlServer;
+
 var builder = WebApplication.CreateBuilder(args);
 
-// 加入Controllers
+// 讀取連接字串
+var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+
+// 註冊 DbContext
+builder.Services.AddDbContext<MoneyPayDBContext>(options =>
+    options.UseSqlServer(connectionString));
+
+// 加入 Controllers
 builder.Services.AddControllers();
 
-// 加入Swagger
+// 加入 Swagger
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-// 加入CORS
+// 加入 CORS
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowAll", policy =>
@@ -19,7 +29,9 @@ builder.Services.AddCors(options =>
 });
 
 var app = builder.Build();
-app.MapControllers();
+
+// 啟用 CORS
+app.UseCors("AllowAll");
 
 if (app.Environment.IsDevelopment())
 {
@@ -28,13 +40,15 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+app.UseAuthorization();
 
+app.MapControllers(); // ⚠️ 沒有就沒辦法呼叫 Controller
 
+// 啟動後自動跳 Swagger
 app.MapGet("/", context =>
 {
     context.Response.Redirect("/swagger");
     return Task.CompletedTask;
 });
-
 
 app.Run();
