@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
+using MoneyPayBackend.IService;
 
 namespace MoneyPayBackend.Controller
 {
@@ -6,30 +7,17 @@ namespace MoneyPayBackend.Controller
     [Route("api/[controller]")]
     public class UserController : ControllerBase
     {
-        [HttpGet]
-        public IActionResult GetUsers()
+        private readonly IUserService _userService;
+        public UserController(IUserService userService)
         {
-            int a = 0;
-            return Ok(a);
+            _userService = userService;
         }
 
         [HttpGet("{id}")]
-        public IActionResult GetUserById(int id)
+        public IActionResult GetUserById(Guid id)
         {
+            var a = _userService.GetUserById(id);
             return Ok(new { message = $"User with id {id}" });
         }
-
-        [HttpPost]
-        public IActionResult CreateUser([FromBody] object userDto)
-        {
-            return CreatedAtAction(nameof(GetUserById), new { id = 1 }, userDto);
-        }
-
-        [HttpPut("{id}")]
-        public IActionResult UpdateUser(int id, [FromBody] object userDto)
-        {
-            return NoContent();
-        }
-
     }
 }

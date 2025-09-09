@@ -1,0 +1,20 @@
+using MoneyPayBackend.IRepo;
+using MoneyPayBackend.Model;
+
+namespace MoneyPayBackend.Repo;
+public class UserRepo : IUserRepo
+{
+    private readonly MoneyPayDBContext _context;
+
+    public UserRepo(MoneyPayDBContext context)
+    {
+        _context = context;
+    }
+
+    public UserModel GetUserById(Guid id)
+    {
+        return _context.User.FirstOrDefault(u => u.Id == id)!;
+    }
+
+
+}

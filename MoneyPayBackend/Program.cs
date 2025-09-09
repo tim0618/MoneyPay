@@ -1,5 +1,9 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.SqlServer;
+using MoneyPayBackend.IRepo;
+using MoneyPayBackend.IService;
+using MoneyPayBackend.Repo;
+using MoneyPayBackend.Service;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -27,6 +31,10 @@ builder.Services.AddCors(options =>
               .AllowAnyMethod();
     });
 });
+
+// 注入
+builder.Services.AddScoped<IUserRepo, UserRepo>();
+builder.Services.AddScoped<IUserService, UserService>();
 
 var app = builder.Build();
 
