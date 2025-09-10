@@ -1,0 +1,34 @@
+# ==============================
+# Build results
+bin/
+obj/
+
+# User-specific files
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+
+# Visual Studio settings
+.vs/
+
+# ASP.NET Core Settings
+Properties/launchSettings.json
+
+# App settings (環境機密)
+appsettings.Development.json
+appsettings.Production.json
+*.secret.json
+
+# HTTP request test files
+*.http
+
+# ==============================
+# Node / Frontend
+node_modules/
+dist/
+*.log
+
+# OS / IDE junk
+*.DS_Store
+Thumbs.db
