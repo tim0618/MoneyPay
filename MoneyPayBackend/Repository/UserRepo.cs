@@ -11,9 +11,9 @@ public class UserRepo : IUserRepo
         _context = context;
     }
 
-    public UserModel GetUserById(Guid id)
+    public UserModel GetUserByEmail(string email)
     {
-        return _context.User.FirstOrDefault(u => u.Id == id)!;
+        return _context.User.FirstOrDefault(u => u.email == email)!;
     }
 
 

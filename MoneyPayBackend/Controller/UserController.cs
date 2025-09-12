@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using MoneyPayBackend.IService;
+using MoneyPayBackend.Request;
 
 namespace MoneyPayBackend.Controller
 {
@@ -13,11 +14,11 @@ namespace MoneyPayBackend.Controller
             _userService = userService;
         }
 
-        [HttpGet("{id}")]
-        public IActionResult GetUserById(Guid id)
+        [HttpPost("Login")]
+        public IActionResult Login(LoginRequest loginRequest)
         {
-            var a = _userService.GetUserById(id);
-            return Ok(new { message = $"User with id {id}" });
+            var result = _userService.Login(loginRequest);
+            return Ok(result);
         }
     }
 }
