@@ -12,7 +12,7 @@
         <q-input v-model="email" label="Email" outlined />
       </q-card-section>
       <q-card-section>
-        <q-input v-model="password" label="Password" outlined />
+        <q-input v-model="password" type="password" label="Password" outlined />
       </q-card-section>
       <q-card-section class="flex flex-center">
         <q-btn label="Login" outlined @click="handleLogin" />
@@ -37,10 +37,18 @@ const handleLogin = async () => {
     if (result.token) {
       localStorage.setItem("token", result.token);
       router.push("/dashboard");
-    } else if (result.message == "Not Registered Yet") alert("尚未註冊");
-    else if (result.message == "Wrong Password") alert("密碼錯誤");
+    } else if (result.message == "Not Registered Yet") {
+      email.value = "";
+      password.value = "";
+      alert("尚未註冊");
+    } else if (result.message == "Wrong Password") {
+      password.value = "";
+      alert("密碼錯誤");
+    }
   } catch (e) {
     console.error("Login error", e);
+    email.value = "";
+    password.value = "";
     alert("登入失敗");
   }
 };
