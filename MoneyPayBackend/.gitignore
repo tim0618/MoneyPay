@@ -1,6 +1,7 @@
 # Build results
 bin/
 obj/
+.vscode/
 
 # User-specific files
 *.user
