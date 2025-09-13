@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using MoneyPayBackend.IService;
 using MoneyPayBackend.Request;
+using LoginRequest = MoneyPayBackend.Request.LoginRequest;
 
 namespace MoneyPayBackend.Controller
 {
@@ -12,6 +13,13 @@ namespace MoneyPayBackend.Controller
         public UserController(IUserService userService)
         {
             _userService = userService;
+        }
+
+        [HttpPost("Register")]
+        public IActionResult Register(RegisterRequest registerRequest)
+        {
+            var retsult = _userService.Register(registerRequest);
+            return Ok(retsult);
         }
 
         [HttpPost("Login")]

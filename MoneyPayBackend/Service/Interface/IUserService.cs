@@ -7,4 +7,5 @@ namespace MoneyPayBackend.IService;
 public interface IUserService
 {
     LoginResponse Login(LoginRequest loginRequest);
+    string Register(RegisterRequest registerRequest);
 }

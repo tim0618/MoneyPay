@@ -18,6 +18,22 @@ public class UserService : IUserService
     {
         _userRepo = userRepo;
     }
+    public string Register(RegisterRequest registerRequest)
+    {
+        var existingUser = _userRepo.GetUserByEmail(registerRequest.email);
+        if (existingUser != null) return "Email Already Registered";
+
+        var newUser = new UserModel
+        {
+            email = registerRequest.email,
+            password = HashPassword(registerRequest.password),
+            name = registerRequest.name,
+            createTime = DateTime.Now
+        };
+
+        if (_userRepo.AddUser(newUser)) return "Registration Successful";
+        return "Registration Failed";
+    }
 
     public LoginResponse Login(LoginRequest loginRequest)
     {
