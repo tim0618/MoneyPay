@@ -1,55 +1,80 @@
 <template>
   <div
-    class="q-pa-md row items-start q-gutter-md flex flex-center"
-    style="height: 100vh"
+    class="q-pa-md flex flex-center"
+    style="height: 100vh; width: 100vw; flex-direction: column"
   >
-    <q-card flat bordered class="my-card" style="width: 90%; max-width: 400px">
-      <q-card-section>
-        <div class="text-h6">登入</div>
-      </q-card-section>
+    <div class="radio-inputs">
+      <label class="radio">
+        <input type="radio" name="radio" value="login" v-model="activeTab" />
+        <span class="name">Login</span>
+      </label>
 
-      <q-card-section class="q-pt-none">
-        <q-input v-model="email" label="Email" outlined />
-      </q-card-section>
-      <q-card-section>
-        <q-input v-model="password" type="password" label="Password" outlined />
-      </q-card-section>
-      <q-card-section class="flex flex-center">
-        <q-btn label="Login" outlined @click="handleLogin" />
-      </q-card-section>
-    </q-card>
+      <label class="radio">
+        <input type="radio" name="radio" value="regidter" v-model="activeTab" />
+        <span class="name">Register</span>
+      </label>
+    </div>
+
+    <!-- Tab -->
+    <div
+      style="
+        width: 100%;
+        margin-top: 20px;
+        display: flex;
+        justify-content: center;
+      "
+    >
+      <LoginForm v-if="activeTab === 'login'" />
+      <RegisterForm v-else />
+    </div>
   </div>
 </template>
 <script setup>
+import LoginForm from "../Components/forms/LoginForm.vue";
+import RegisterForm from "../components/forms/RegisterForm.vue";
 import { ref } from "vue";
-import { auth } from "../apiComposables/userAuthApiComposables";
-import { useRouter } from "vue-router";
 
-const email = ref("");
-const password = ref("");
-const router = useRouter();
-const { loginApi } = auth();
-
-const handleLogin = async () => {
-  try {
-    console.log("登入資料", email.value, password.value);
-    const result = await loginApi(email.value, password.value);
-    if (result.token) {
-      localStorage.setItem("token", result.token);
-      router.push("/dashboard");
-    } else if (result.message == "Not Registered Yet") {
-      email.value = "";
-      password.value = "";
-      alert("尚未註冊");
-    } else if (result.message == "Wrong Password") {
-      password.value = "";
-      alert("密碼錯誤");
-    }
-  } catch (e) {
-    console.error("Login error", e);
-    email.value = "";
-    password.value = "";
-    alert("登入失敗");
-  }
-};
+const activeTab = ref("login"); // 預設顯示 Login
 </script>
+<style scoped>
+.radio-inputs {
+  position: relative;
+  display: flex;
+  flex-wrap: wrap;
+  border-radius: 0.5rem;
+  background-color: #eee;
+  box-sizing: border-box;
+  box-shadow: 0 0 0px 1px rgba(0, 0, 0, 0.06);
+  padding: 0.25rem;
+  max-width: 400px;
+  width: 90%;
+
+  font-size: 14px;
+}
+
+.radio-inputs .radio {
+  flex: 1 1 auto;
+  text-align: center;
+}
+
+.radio-inputs .radio input {
+  display: none;
+}
+
+.radio-inputs .radio .name {
+  display: flex;
+  cursor: pointer;
+  align-items: center;
+  justify-content: center;
+  border-radius: 0.5rem;
+  border: none;
+  padding: 0.5rem 0;
+  color: rgba(51, 65, 85, 1);
+  transition: all 0.15s ease-in-out;
+}
+
+.radio-inputs .radio input:checked + .name {
+  background-color: #fff;
+  font-weight: 600;
+}
+</style>

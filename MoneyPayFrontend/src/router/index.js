@@ -1,27 +1,24 @@
-import { createRouter, createWebHistory } from 'vue-router'
-import Login from '../pages/Login.vue'
-import MainLayout from '../layouts/MainLayout.vue'
-import Dashboard from '../pages/Dashboard.vue'
-
+import { createRouter, createWebHistory } from "vue-router";
+import Login from "../pages/Login.vue";
+import MainLayout from "../layouts/MainLayout.vue";
+import Dashboard from "../pages/Dashboard.vue";
 
 const routes = [
   {
-    path: '/',
-    redirect: '/login'  // 預設開啟 /login
+    path: "/",
+    redirect: "/login", // 預設開啟 /login
   },
-  { path: '/login', component: Login },
+  { path: "/login", component: Login },
   {
-    path: '/dashboard',
+    path: "/dashboard",
     component: MainLayout,
-    children: [
-      { path: 'dashboard', component: Dashboard }
-    ]
-  }
-]
+    children: [{ path: "", component: Dashboard }],
+  },
+];
 
 const router = createRouter({
   history: createWebHistory(),
-  routes
-})
+  routes,
+});
 
-export default router
+export default router;

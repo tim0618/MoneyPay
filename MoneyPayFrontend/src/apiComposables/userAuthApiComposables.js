@@ -17,5 +17,23 @@ export const auth = () => {
     }
   };
 
-  return { loginApi };
+  const registerApi = async (email, password, name) => {
+    try {
+      const response = await axios.post(`${API_BASE_URL}/register`, {
+        email: email,
+        password: password,
+        name: name,
+      });
+
+      return response.data;
+    } catch (e) {
+      console.error("Register API error:", e);
+      throw e;
+    }
+  };
+
+  return {
+    loginApi,
+    registerApi,
+  };
 };
