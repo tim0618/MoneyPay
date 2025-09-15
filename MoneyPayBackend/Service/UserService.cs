@@ -14,9 +14,11 @@ namespace MoneyPayBackend.Service;
 public class UserService : IUserService
 {
     private readonly IUserRepo _userRepo;
-    public UserService(IUserRepo userRepo)
+    private readonly ITypeRepo _typeRepo;
+    public UserService(IUserRepo userRepo, ITypeRepo typeRepo)
     {
         _userRepo = userRepo;
+        _typeRepo = typeRepo;
     }
     public string Register(RegisterRequest registerRequest)
     {
@@ -31,7 +33,11 @@ public class UserService : IUserService
             createTime = DateTime.Now
         };
 
-        if (_userRepo.AddUser(newUser)) return "Registration Successful";
+        if (_userRepo.AddUser(newUser))
+        {
+            if (_typeRepo.AddDefaultTypesForUser(newUser.email)) return "Contact Officials";
+            return "Registration Successful";
+        }
         return "Registration Failed";
     }
 

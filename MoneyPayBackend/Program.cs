@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.SqlServer;
+using MineyPayBackend.Service;
 using MoneyPayBackend.IRepo;
 using MoneyPayBackend.IService;
 using MoneyPayBackend.Repo;
@@ -35,6 +36,8 @@ builder.Services.AddCors(options =>
 // 注入
 builder.Services.AddScoped<IUserRepo, UserRepo>();
 builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<ITypeRepo, TypeRepo>();
+builder.Services.AddScoped<ITypeService, TypeService>();
 
 var app = builder.Build();
 
