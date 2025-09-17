@@ -5,6 +5,6 @@ namespace MoneyPayBackend.IRepo
     public interface ITypeRepo
     {
         bool AddDefaultTypesForUser(string email);
-        List<MoneyTypesModel> GetTypesByEmail(string email);
+        List<MoneyTypesModel> GetMoneyTypesByEmail(string email);
     }
 }

@@ -1,6 +1,6 @@
 <template>
   <div
-    class="q-pa-md flex flex-center"
+    class="q-pa-md flex flex-center app-container"
     style="height: 100vh; width: 100vw; flex-direction: column"
   >
     <div class="radio-inputs">

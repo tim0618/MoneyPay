@@ -22,10 +22,10 @@ namespace MoneyPayBackend.Controller
         }
 
         [Authorize]
-        [HttpGet("Index")]
-        public IActionResult Index()
+        [HttpGet("GetMoneyTypesByEmail")]
+        public IActionResult GetMoneyTypesByEmail()
         {
-            var types = _typeService.GetTypesByEmail(userEmail);
+            var types = _typeService.GetMoneyTypesByEmail(userEmail);
             return Ok(types);
         }
 

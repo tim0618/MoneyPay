@@ -31,7 +31,7 @@ public class TypeRepo : ITypeRepo
         return _context.SaveChanges() > 0;
     }
 
-    public List<MoneyTypesModel> GetTypesByEmail(string email)
+    public List<MoneyTypesModel> GetMoneyTypesByEmail(string email)
     {
         var allTypes = _context.MoneyTypes.Where(t => t.email == email).ToList();
         return allTypes;

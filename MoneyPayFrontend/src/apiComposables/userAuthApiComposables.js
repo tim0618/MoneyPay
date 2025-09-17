@@ -5,7 +5,7 @@ const API_BASE_URL = "http://localhost:5140/api/User";
 export const auth = () => {
   const loginApi = async (email, password) => {
     try {
-      const response = await axios.post(`${API_BASE_URL}/login`, {
+      const response = await axios.post(`${API_BASE_URL}/Login`, {
         email: email,
         password: password,
       });
@@ -19,7 +19,7 @@ export const auth = () => {
 
   const registerApi = async (email, password, name) => {
     try {
-      const response = await axios.post(`${API_BASE_URL}/register`, {
+      const response = await axios.post(`${API_BASE_URL}/Register`, {
         email: email,
         password: password,
         name: name,
