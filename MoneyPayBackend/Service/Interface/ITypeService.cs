@@ -5,6 +5,6 @@ namespace MoneyPayBackend.IService
 {
     public interface ITypeService
     {
-        List<TypeModel> GetTypesByEmail(TypeRequest typeRequest);
+        List<MoneyTypesModel> GetTypesByEmail(string userEmail);
     }
 }

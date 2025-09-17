@@ -35,7 +35,7 @@ public class UserService : IUserService
 
         if (_userRepo.AddUser(newUser))
         {
-            if (_typeRepo.AddDefaultTypesForUser(newUser.email)) return "Contact Officials";
+            if (!_typeRepo.AddDefaultTypesForUser(newUser.email)) return "Contact Officials";
             return "Registration Successful";
         }
         return "Registration Failed";
@@ -72,8 +72,8 @@ public class UserService : IUserService
     {
         var claims = new[]
         {
-            new Claim(JwtRegisteredClaimNames.Sub, userData.Id.ToString()),
             new Claim(JwtRegisteredClaimNames.Email, userData.email),
+            new Claim("userEmail", userData.email),
             new Claim("name", userData.name),
         };
 
