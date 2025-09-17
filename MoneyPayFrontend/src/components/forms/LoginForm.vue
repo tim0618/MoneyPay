@@ -36,7 +36,7 @@ const handleLogin = async () => {
     const result = await loginApi(email.value, password.value);
     if (result.token) {
       localStorage.setItem("token", result.token);
-      router.push("/dashboard");
+      router.push("/home");
     } else if (result.message == "Not Registered Yet") {
       email.value = "";
       password.value = "";
