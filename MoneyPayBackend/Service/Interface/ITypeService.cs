@@ -5,6 +5,6 @@ namespace MoneyPayBackend.IService
 {
     public interface ITypeService
     {
-        List<MoneyTypesModel> GetMoneyTypesByEmail(string userEmail);
+        List<MoneyTypesModel> GetMoneyTypesSum(string userEmail);
     }
 }

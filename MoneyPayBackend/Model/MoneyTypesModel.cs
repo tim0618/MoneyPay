@@ -11,5 +11,6 @@ namespace MoneyPayBackend.Model
         public string? icon { get; set; }
         public string? color { get; set; }
         public string? categoryType { get; set; }
+        public int totalPay { get; set; }
     }
 }

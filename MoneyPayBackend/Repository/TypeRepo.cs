@@ -35,9 +35,23 @@ public class TypeRepo : ITypeRepo
         return _context.SaveChanges() > 0;
     }
 
-    public List<MoneyTypesModel> GetMoneyTypesByEmail(string email)
+    public List<MoneyTypesModel> GetMoneyTypesSum(string email)
     {
-        var allTypes = _context.MoneyTypes.Where(t => t.email == email).ToList();
+        var allTypes = _context.MoneyTypes
+            .Where(t => t.email == email)
+            .GroupJoin(_context.MoneyTypeDetail,
+            m => m.Id,
+            md => md.moneyTypeId,
+            (m, md) => new MoneyTypesModel
+            {
+                Id = m.Id,
+                email = m.email,
+                type = m.type,
+                icon = m.icon,
+                color = m.color,
+                categoryType = m.categoryType,
+                totalPay = md.Sum(x => (int?)x.price) ?? 0
+            }).ToList();
         return allTypes;
     }
 }

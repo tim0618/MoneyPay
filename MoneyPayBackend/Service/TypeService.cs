@@ -14,9 +14,9 @@ namespace MineyPayBackend.Service
             _typeRepo = typeRepo;
         }
 
-        public List<MoneyTypesModel> GetMoneyTypesByEmail(string userEmail)
+        public List<MoneyTypesModel> GetMoneyTypesSum(string userEmail)
         {
-            var allType = _typeRepo.GetMoneyTypesByEmail(userEmail);
+            var allType = _typeRepo.GetMoneyTypesSum(userEmail);
             return allType;
         }
 
