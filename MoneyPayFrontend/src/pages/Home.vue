@@ -4,22 +4,35 @@
     <div v-else>
       <div v-if="types.length == 0">目前沒有付費種類</div>
       <div v-else>
-        本月
-        <ul>
-          <li v-for="type in types">
-            {{ type.type }} - {{ type.icon }} - {{ type.color }}
-          </li>
-        </ul>
+        <span style="display: flex; justify-content: center;">本月</span>
+        <span style="display: flex; justify-content: center; padding:20px ;">支出</span>
+        <div class="btnGrid">
+          <MoneyTypeButton
+            v-for="type in expenseTypes"
+            :key="type.id"
+            :type="type"
+          />
+        </div>
+        <span style="display: flex; justify-content: center; padding:20px ;">收入</span>
+         <div class="btnGrid">
+          <!-- <MoneyTypeButton v-for="type in types" :key="type.id" v-bind="type" /> -->
+          <MoneyTypeButton
+            v-for="type in incomeTypes"
+            :key="type.id"
+            :type="type"
+          />
+        </div>
       </div>
     </div>
   </div>
 </template>
 <script setup>
-import { onMounted, ref } from "vue";
+import { onMounted, ref, computed } from "vue";
 import { typeApi } from "../apiComposables/typeApiComposables";
 import { useRouter } from "vue-router";
+import MoneyTypeButton from "../components/buttons/MoneyTypeButton.vue";
 
-const { getMoneyTypesByEmailApi } = typeApi();
+const { getMoneyTypesSumApi } = typeApi();
 
 const router = useRouter();
 const types = ref([]);
@@ -31,8 +44,7 @@ onMounted(async () => {
     if (!token) {
       throw new Error("No token found");
     }
-    const result = await getMoneyTypesByEmailApi(token);
-    console.log(result);
+    const result = await getMoneyTypesSumApi(token);
     types.value = result;
   } catch (error) {
     console.error(error);
@@ -42,5 +54,21 @@ onMounted(async () => {
     loading.value = false;
   }
 });
+
+const expenseTypes = computed(() =>
+  types.value.filter((t) => t.categoryType === "Expense")
+);
+
+const incomeTypes = computed(() => {
+  return types.value.filter((t) => {
+    return t.categoryType === "Income";
+  });
+});
 </script>
-<style scoped></style>
+<style scoped>
+.btnGrid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr); /* 每行三個 */
+  gap: 12px; /* 按鈕間距 */
+}
+</style>

@@ -1,9 +1,9 @@
 <template>
-  <q-layout>
+  <q-layout view="hHh lpR fFf">
     <q-page-container>
       <router-view />
     </q-page-container>
-    <q-footer>
+    <q-footer style="height: 10vh">
       <div id="navbody">
         <form action="#">
           <ul class="ul">
@@ -109,7 +109,7 @@
 
 <style scoped>
 #navbody {
-  height: 10vh;
+  height: 100%;
   background-color: rgb(255, 255, 255);
   box-shadow: 0px 10px 15px rgba(0, 0, 0, 0.041);
   align-items: end;
