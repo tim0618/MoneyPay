@@ -31,7 +31,7 @@ defineProps({
   color: #ffffff;
   font-size: 17px;
   border: 1px solid;
-  border-radius: 30px;
+  border-radius: 25px;
   cursor: pointer;
   padding: 10px;
   transition: all 0.1s;
