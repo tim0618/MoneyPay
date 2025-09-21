@@ -18,18 +18,25 @@ namespace MineyPayBackend.Service
         {
             return _typeRepo.GetMoneyTypesSum(userEmail);
         }
-        public bool AddTypePay(TypePay typePay)
+        public bool AddTypePay(AddTypePay addTypePay)
         {
-            var moneyTypeId = typePay.moneyTypeId;
-            var price = typePay.price;
-            var createTime = typePay.createTime;
             var typeDetail = new MoneyTypeDetailModel
             {
-                moneyTypeId = moneyTypeId,
-                price = price,
-                createTime = createTime
+                moneyTypeId = addTypePay.moneyTypeId,
+                price = addTypePay.price,
+                createTime = addTypePay.createTime
             };
             return _typeRepo.AddTypePay(typeDetail);
+        }
+        public bool UpdateTypePay(UpdateTypePay updateTypePay)
+        {
+            var updateTypeDetail = new MoneyTypeDetailModel
+            {
+                Id = updateTypePay.Id,
+                price = updateTypePay.price,
+                createTime = DateTime.Now
+            };
+            return _typeRepo.UpdateTypePay(updateTypeDetail);
         }
     }
 }

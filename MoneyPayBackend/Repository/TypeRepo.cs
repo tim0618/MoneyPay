@@ -60,4 +60,15 @@ public class TypeRepo : ITypeRepo
         return _context.SaveChanges() > 0;
     }
 
+    public bool UpdateTypePay(MoneyTypeDetailModel updateTypeDetail)
+    {
+        var typeDetail = _context.MoneyTypeDetail.FirstOrDefault(md => md.Id == updateTypeDetail.Id);
+        if (typeDetail == null) return false;
+
+        typeDetail.price = updateTypeDetail.price;
+        typeDetail.createTime = updateTypeDetail.createTime;
+
+        return _context.SaveChanges() > 0;
+    }
+
 }

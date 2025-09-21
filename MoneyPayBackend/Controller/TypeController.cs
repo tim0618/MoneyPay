@@ -30,10 +30,18 @@ namespace MoneyPayBackend.Controller
 
         [Authorize]
         [HttpPost("AddTypePay")]
-        public IActionResult AddTypePay(TypePay typePay)
+        public IActionResult AddTypePay(AddTypePay addTypePay)
         {
-            if (_typeService.AddTypePay(typePay)) return Ok();
+            if (_typeService.AddTypePay(addTypePay)) return Ok();
             return BadRequest("AddTypePay Error");
+        }
+
+        [Authorize]
+        [HttpPut("UpdateTypePay")]
+        public IActionResult UpdateTypePay(UpdateTypePay updateTypePay)
+        {
+            if (_typeService.UpdateTypePay(updateTypePay)) return Ok();
+            return BadRequest("UpdateTypePay Error");
         }
     }
 }
