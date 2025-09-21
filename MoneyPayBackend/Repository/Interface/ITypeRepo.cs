@@ -6,5 +6,6 @@ namespace MoneyPayBackend.IRepo
     {
         bool AddDefaultTypesForUser(string email);
         List<MoneyTypesModel> GetMoneyTypesSum(string email);
+        bool AddTypePay(MoneyTypeDetailModel typeDetail);
     }
 }

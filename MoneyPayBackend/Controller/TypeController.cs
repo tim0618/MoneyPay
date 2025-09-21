@@ -1,4 +1,3 @@
-using System.IdentityModel.Tokens.Jwt;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using MoneyPayBackend.IService;
@@ -29,5 +28,12 @@ namespace MoneyPayBackend.Controller
             return Ok(types);
         }
 
+        [Authorize]
+        [HttpPost("AddTypePay")]
+        public IActionResult AddTypePay(TypePay typePay)
+        {
+            if (_typeService.AddTypePay(typePay)) return Ok();
+            return BadRequest("AddTypePay Error");
+        }
     }
 }

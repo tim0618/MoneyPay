@@ -16,9 +16,20 @@ namespace MineyPayBackend.Service
 
         public List<MoneyTypesModel> GetMoneyTypesSum(string userEmail)
         {
-            var allType = _typeRepo.GetMoneyTypesSum(userEmail);
-            return allType;
+            return _typeRepo.GetMoneyTypesSum(userEmail);
         }
-
+        public bool AddTypePay(TypePay typePay)
+        {
+            var moneyTypeId = typePay.moneyTypeId;
+            var price = typePay.price;
+            var createTime = typePay.createTime;
+            var typeDetail = new MoneyTypeDetailModel
+            {
+                moneyTypeId = moneyTypeId,
+                price = price,
+                createTime = createTime
+            };
+            return _typeRepo.AddTypePay(typeDetail);
+        }
     }
 }

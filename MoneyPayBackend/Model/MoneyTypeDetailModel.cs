@@ -2,7 +2,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace MoneyPayBackend.Model
 {
-    public class MoneyTypeDetail
+    public class MoneyTypeDetailModel
     {
         [Key]
         public int Id { get; set; }

@@ -6,5 +6,6 @@ namespace MoneyPayBackend.IService
     public interface ITypeService
     {
         List<MoneyTypesModel> GetMoneyTypesSum(string userEmail);
+        bool AddTypePay(TypePay typePay);
     }
 }

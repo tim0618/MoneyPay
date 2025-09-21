@@ -7,5 +7,5 @@ public class MoneyPayDBContext : DbContext
 
     public DbSet<UserModel> User { get; set; }
     public DbSet<MoneyTypesModel> MoneyTypes { get; set; }
-    public DbSet<MoneyTypeDetail> MoneyTypeDetail { get; set; }
+    public DbSet<MoneyTypeDetailModel> MoneyTypeDetail { get; set; }
 }
