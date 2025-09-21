@@ -8,5 +8,6 @@ namespace MoneyPayBackend.IRepo
         List<MoneyTypesModel> GetMoneyTypesSum(string email);
         bool AddTypePay(MoneyTypeDetailModel typeDetail);
         bool UpdateTypePay(MoneyTypeDetailModel updateTypeDetail);
+        bool DeleteTypePay(int typeDetailId);
     }
 }

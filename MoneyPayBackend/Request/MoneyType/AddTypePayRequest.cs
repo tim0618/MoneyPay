@@ -1,6 +1,6 @@
 namespace MoneyPayBackend.Request
 {
-    public class AddTypePay
+    public class AddTypePayRequest
     {
         public int moneyTypeId { get; set; }
         public int price { get; set; }

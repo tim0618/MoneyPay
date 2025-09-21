@@ -71,4 +71,13 @@ public class TypeRepo : ITypeRepo
         return _context.SaveChanges() > 0;
     }
 
+    public bool DeleteTypePay(int typeDetailId)
+    {
+        var typeDetail = _context.MoneyTypeDetail.FirstOrDefault(md => md.Id == typeDetailId);
+        if (typeDetail == null) return false;
+
+        _context.MoneyTypeDetail.Remove(typeDetail);
+        return _context.SaveChanges() > 0;
+    }
+
 }

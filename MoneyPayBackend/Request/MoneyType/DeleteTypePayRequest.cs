@@ -1,8 +1,7 @@
 namespace MoneyPayBackend.Request
 {
-    public class UpdateTypePayRequest
+    public class DeleteTypePayRequest
     {
         public int Id { get; set; }
-        public int price { get; set; }
     }
 }

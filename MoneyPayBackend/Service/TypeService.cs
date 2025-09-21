@@ -3,7 +3,7 @@ using MoneyPayBackend.IService;
 using MoneyPayBackend.Model;
 using MoneyPayBackend.Request;
 
-namespace MineyPayBackend.Service
+namespace MoneyPayBackend.Service
 {
     public class TypeService : ITypeService
     {
@@ -18,7 +18,7 @@ namespace MineyPayBackend.Service
         {
             return _typeRepo.GetMoneyTypesSum(userEmail);
         }
-        public bool AddTypePay(AddTypePay addTypePay)
+        public bool AddTypePay(AddTypePayRequest addTypePay)
         {
             var typeDetail = new MoneyTypeDetailModel
             {
@@ -28,7 +28,7 @@ namespace MineyPayBackend.Service
             };
             return _typeRepo.AddTypePay(typeDetail);
         }
-        public bool UpdateTypePay(UpdateTypePay updateTypePay)
+        public bool UpdateTypePay(UpdateTypePayRequest updateTypePay)
         {
             var updateTypeDetail = new MoneyTypeDetailModel
             {
@@ -37,6 +37,10 @@ namespace MineyPayBackend.Service
                 createTime = DateTime.Now
             };
             return _typeRepo.UpdateTypePay(updateTypeDetail);
+        }
+        public bool DeleteTypePay(DeleteTypePayRequest deleteTypePay)
+        {
+            return _typeRepo.DeleteTypePay(deleteTypePay.Id);
         }
     }
 }

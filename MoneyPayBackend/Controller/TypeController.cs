@@ -30,7 +30,7 @@ namespace MoneyPayBackend.Controller
 
         [Authorize]
         [HttpPost("AddTypePay")]
-        public IActionResult AddTypePay(AddTypePay addTypePay)
+        public IActionResult AddTypePay(AddTypePayRequest addTypePay)
         {
             if (_typeService.AddTypePay(addTypePay)) return Ok();
             return BadRequest("AddTypePay Error");
@@ -38,10 +38,18 @@ namespace MoneyPayBackend.Controller
 
         [Authorize]
         [HttpPut("UpdateTypePay")]
-        public IActionResult UpdateTypePay(UpdateTypePay updateTypePay)
+        public IActionResult UpdateTypePay(UpdateTypePayRequest updateTypePay)
         {
             if (_typeService.UpdateTypePay(updateTypePay)) return Ok();
             return BadRequest("UpdateTypePay Error");
+        }
+
+        [Authorize]
+        [HttpDelete("DeleteTypePay")]
+        public IActionResult DeleteTypePay(DeleteTypePayRequest deleteTypePay)
+        {
+            if (_typeService.DeleteTypePay(deleteTypePay)) return Ok();
+            return BadRequest("DeleteTypePay Error");
         }
     }
 }
