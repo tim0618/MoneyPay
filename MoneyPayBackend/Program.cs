@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.SqlServer;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
-using MineyPayBackend.Service;
+using MoneyPayBackend.Service;
 using MoneyPayBackend.IRepo;
 using MoneyPayBackend.IService;
 using MoneyPayBackend.Repo;
