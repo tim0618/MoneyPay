@@ -38,7 +38,11 @@ const handleRegister = async () => {
       alert("請輸入完整資料");
       return;
     }
-    const result = await registerApi(email.value, password.value, name.value);
+    const result = await registerApi({
+      email: email.value,
+      password: password.value,
+      name: name.value,
+    });
     if (result == "Registration Successful") {
       alert("註冊成功");
       router.push("/login");

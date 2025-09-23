@@ -29,6 +29,14 @@ namespace MoneyPayBackend.Controller
         }
 
         [Authorize]
+        [HttpGet("GetTypeRemark/{typeId}")]
+        public IActionResult GetTypeRemarkById(int typeId)
+        {
+            var types = _typeService.GetTypeRemarkById(typeId);
+            return Ok(types);
+        }
+
+        [Authorize]
         [HttpPost("AddTypePay")]
         public IActionResult AddTypePay(AddTypePayRequest addTypePay)
         {

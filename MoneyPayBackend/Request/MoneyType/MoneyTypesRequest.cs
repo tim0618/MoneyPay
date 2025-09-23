@@ -1,15 +1,13 @@
-using System.ComponentModel.DataAnnotations;
-
-namespace MoneyPayBackend.Model
+namespace MoneyPayBackend.Request
 {
-    public class MoneyTypesModel
+    public class MoneyTypesRequest
     {
-        [Key]
         public int moneyTypeId { get; set; }
         public string? email { get; set; }
         public string? type { get; set; }
         public string? icon { get; set; }
         public string? color { get; set; }
         public string? categoryType { get; set; }
+        public int totalPay { get; set; }
     }
 }

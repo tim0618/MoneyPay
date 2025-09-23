@@ -3,13 +3,9 @@ import axios from "axios";
 const API_BASE_URL = "http://localhost:5140/api/User";
 
 export const auth = () => {
-  const loginApi = async (email, password) => {
+  const loginApi = async (payload) => {
     try {
-      const response = await axios.post(`${API_BASE_URL}/Login`, {
-        email: email,
-        password: password,
-      });
-
+      const response = await axios.post(`${API_BASE_URL}/Login`, payload);
       return response.data;
     } catch (e) {
       console.error("Login API error:", e);
@@ -17,14 +13,9 @@ export const auth = () => {
     }
   };
 
-  const registerApi = async (email, password, name) => {
+  const registerApi = async (payload) => {
     try {
-      const response = await axios.post(`${API_BASE_URL}/Register`, {
-        email: email,
-        password: password,
-        name: name,
-      });
-
+      const response = await axios.post(`${API_BASE_URL}/Register`, payload);
       return response.data;
     } catch (e) {
       console.error("Register API error:", e);

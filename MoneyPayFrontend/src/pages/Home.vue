@@ -4,26 +4,33 @@
     <div v-else>
       <div v-if="types.length == 0">目前沒有付費種類</div>
       <div v-else>
-        <span style="display: flex; justify-content: center;">本月</span>
-        <span style="display: flex; justify-content: center; padding:20px ;">支出</span>
+        <span style="display: flex; justify-content: center">本月</span>
+        <span style="display: flex; justify-content: center; padding: 20px"
+          >支出</span
+        >
         <div class="btnGrid">
           <MoneyTypeButton
             v-for="type in expenseTypes"
             :key="type.id"
-            :type="type"
+            :typeDetail="type"
+            @typeSelect="openTypeDialog"
           />
         </div>
-        <span style="display: flex; justify-content: center; padding:20px ;">收入</span>
-         <div class="btnGrid">
+        <span style="display: flex; justify-content: center; padding: 20px"
+          >收入</span
+        >
+        <div class="btnGrid">
           <!-- <MoneyTypeButton v-for="type in types" :key="type.id" v-bind="type" /> -->
           <MoneyTypeButton
             v-for="type in incomeTypes"
             :key="type.id"
-            :type="type"
+            :typeDetail="type"
+            @typeSelect="openTypeDialog"
           />
         </div>
       </div>
     </div>
+    <MoneyTypeDialog v-model="showDialog" :type="selectedType" />
   </div>
 </template>
 <script setup>
@@ -31,12 +38,21 @@ import { onMounted, ref, computed } from "vue";
 import { typeApi } from "../apiComposables/typeApiComposables";
 import { useRouter } from "vue-router";
 import MoneyTypeButton from "../components/buttons/MoneyTypeButton.vue";
+import MoneyTypeDialog from "../components/dialogs/MoneyTypeDialog.vue";
 
 const { getMoneyTypesSumApi } = typeApi();
 
 const router = useRouter();
 const types = ref([]);
 const loading = ref(true);
+
+const showDialog = ref(false);
+const selectedType = ref(null);
+
+function openTypeDialog(type) {
+  showDialog.value = true;
+  selectedType.value = type;
+}
 
 onMounted(async () => {
   try {

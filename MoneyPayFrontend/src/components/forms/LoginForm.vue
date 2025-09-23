@@ -29,11 +29,14 @@ const { loginApi } = auth();
 
 const handleLogin = async () => {
   try {
-    if(email.value === "" || password.value === "") {
+    if (email.value === "" || password.value === "") {
       alert("請輸入完整資料");
       return;
     }
-    const result = await loginApi(email.value, password.value);
+    const result = await loginApi({
+      email: email.value,
+      password: password.value,
+    });
     if (result.token) {
       localStorage.setItem("token", result.token);
       router.push("/home");

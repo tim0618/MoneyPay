@@ -1,16 +1,25 @@
 <template>
-  <button class="button" :style="{ backgroundColor: type.color }">
+  <button
+    class="button"
+    :style="{ backgroundColor: typeDetail.color }"
+    @click="$emit('typeSelect', typeDetail)"
+  >
     <div class="buttonContent">
-      <span class="label">{{ type.type }}</span>
-      <q-icon :name="type.icon" size="32px" color="white" />
-      <span>{{ type.totalPay }}</span>
+      <span class="label">{{ typeDetail.type }}</span>
+      <q-icon
+        style="padding: 10px 0px"
+        :name="typeDetail.icon"
+        size="32px"
+        color="white"
+      />
+      <span>{{ typeDetail.totalPay }}</span>
     </div>
   </button>
 </template>
 
 <script setup>
 defineProps({
-  type: {
+  typeDetail: {
     type: Object,
     required: true, //必須傳直
     // default: () => ({ type: "未知", icon: "", color: "#ccc" }), 預設
@@ -19,7 +28,6 @@ defineProps({
 </script>
 
 <style scoped>
-
 .button {
   width: 100%;
   height: 150px;

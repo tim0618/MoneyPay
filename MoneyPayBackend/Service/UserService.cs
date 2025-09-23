@@ -35,7 +35,9 @@ public class UserService : IUserService
 
         if (_userRepo.AddUser(newUser))
         {
-            if (!_typeRepo.AddDefaultTypesForUser(newUser.email)) return "Contact Officials";
+            if (!_typeRepo.AddDefaultTypesForUser(newUser.email)) return "AddDefaultTypesForUser Error";
+            if (!_typeRepo.AddDefaultTypeRemarksForUser(newUser.email)) return "AddDefaultTypeRemarksForUser Error";
+
             return "Registration Successful";
         }
         return "Registration Failed";
