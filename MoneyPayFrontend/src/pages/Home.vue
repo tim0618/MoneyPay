@@ -5,9 +5,11 @@
       <div v-if="types.length == 0">目前沒有付費種類</div>
       <div v-else>
         <span style="display: flex; justify-content: center">本月</span>
-        <span style="display: flex; justify-content: center; padding: 20px"
-          >支出</span
-        >
+        <div class="expenseTitle">
+          <span style="display: flex; justify-content: center; padding: 20px"
+            >支出 ${{ expenseTypesTotal }}</span
+          >
+        </div>
         <div class="btnGrid">
           <MoneyTypeButton
             v-for="type in expenseTypes"
@@ -17,7 +19,7 @@
           />
         </div>
         <span style="display: flex; justify-content: center; padding: 20px"
-          >收入</span
+          >收入 ${{ incomeTypesTotal }}</span
         >
         <div class="btnGrid">
           <!-- <MoneyTypeButton v-for="type in types" :key="type.id" v-bind="type" /> -->
@@ -30,7 +32,11 @@
         </div>
       </div>
     </div>
-    <MoneyTypeDialog v-model="showDialog" :type="selectedType" />
+    <MoneyTypeDialog
+      v-model="showDialog"
+      :type="selectedType"
+      @refreshData="fetchMoneyTypes"
+    />
   </div>
 </template>
 <script setup>
@@ -54,8 +60,9 @@ function openTypeDialog(type) {
   selectedType.value = type;
 }
 
-onMounted(async () => {
+const fetchMoneyTypes = async () => {
   try {
+    loading.value = true; // 在開始載入時設定為 true
     const token = localStorage.getItem("token");
     if (!token) {
       throw new Error("No token found");
@@ -69,6 +76,10 @@ onMounted(async () => {
   } finally {
     loading.value = false;
   }
+};
+
+onMounted(() => {
+  fetchMoneyTypes();
 });
 
 const expenseTypes = computed(() =>
@@ -80,6 +91,14 @@ const incomeTypes = computed(() => {
     return t.categoryType === "Income";
   });
 });
+
+const expenseTypesTotal = computed(() =>
+  expenseTypes.value.reduce((sum, item) => sum + item.totalPay, 0)
+);
+
+const incomeTypesTotal = computed(() =>
+  incomeTypes.value.reduce((sum, item) => sum + item.totalPay, 0)
+);
 </script>
 <style scoped>
 .btnGrid {
