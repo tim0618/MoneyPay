@@ -20,6 +20,7 @@
 import { ref } from "vue";
 import { auth } from "../../apiComposables/userAuthApiComposables";
 import { useRouter } from "vue-router";
+import { jwtDecode } from "jwt-decode";
 
 const email = ref("");
 const password = ref("");
@@ -39,6 +40,10 @@ const handleLogin = async () => {
     });
     if (result.token) {
       localStorage.setItem("token", result.token);
+
+      const decoded = jwtDecode(result.token);
+      localStorage.setItem("name", decoded.name);
+      localStorage.setItem("userEmail", decoded.userEmail);
       router.push("/home");
     } else if (result.message == "Not Registered Yet") {
       email.value = "";
