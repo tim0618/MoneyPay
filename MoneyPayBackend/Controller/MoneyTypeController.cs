@@ -7,7 +7,7 @@ namespace MoneyPayBackend.Controller
 {
     [ApiController]
     [Route("api/[controller]")]
-    public class TypeController : ControllerBase
+    public class MoneyTypeController : ControllerBase
     {
         // 這個因為版本或其他問題無法使用，要完整的路徑
         private string userEmailFullPath => User.Claims.FirstOrDefault(c => c.Type == "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress")?.Value;
@@ -15,7 +15,7 @@ namespace MoneyPayBackend.Controller
 
 
         private readonly ITypeService _typeService;
-        public TypeController(ITypeService typeService)
+        public MoneyTypeController(ITypeService typeService)
         {
             _typeService = typeService;
         }
