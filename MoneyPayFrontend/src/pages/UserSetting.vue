@@ -1,5 +1,4 @@
 <template>
-  {{ token }}
   <div class="card">
     <svg
       xml:space="preserve"
@@ -15,42 +14,47 @@
         ></path>
       </g>
     </svg>
-    <p class="cookieHeading">We use cookies.</p>
-    <p class="cookieDescription">
-      We use cookies to ensure that we give you the best experience on our
-      website. <br />
-    </p>
+    <p class="cookieHeading">name：{{ name }}</p>
+    <div class="bookkeepingRecords">
+      <div class="bookkeepingRecordsContent">
+        <span>{{ recordContinuous }}</span>
+        <span>連續記帳天數</span>
+      </div>
+      <div class="bookkeepingRecordsContent">
+        <span>{{ recordDaysCount }}</span>
+        <span>記帳天數</span>
+      </div>
+      <div class="bookkeepingRecordsContent">
+        <span>{{ recordCount }}</span>
+        <span>記帳總筆數</span>
+      </div>
+    </div>
 
     <button class="acceptButton">Allow</button>
   </div>
 
+  <p>目標存款/y $50000 ⚙ 進度條</p>
+  <p>花費上限/y $50000 ⚙ 進度條</p>
+  <!-- 新增 UserGoals Table -->
+
   <button class="comic-button" @click="logout">Logout</button>
 </template>
-<script setup>
-import { onMounted } from "vue";
-import { useRouter } from "vue-router";
 
-const router = useRouter();
-
-const isToken = () => {
-  const token = localStorage.getItem("token");
-  if (!token) {
-    alert("請先登入");
-    router.push("/");
-  }
-};
-onMounted(() => {
-  isToken();
-});
-
-const logout = () => {
-  localStorage.removeItem("token");
-  localStorage.removeItem("name");
-  localStorage.removeItem("userEmail");
-  router.push("/");
-};
-</script>
 <style>
+.bookkeepingRecords {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.bookkeepingRecordsContent {
+  width: 30%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 10px;
+}
 .card {
   background-color: rgb(255, 255, 255);
   border-radius: 8px;
@@ -58,7 +62,7 @@ const logout = () => {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: 20px 30px;
+  padding: 20px 0px;
   margin: 5%;
   gap: 13px;
   box-shadow: 2px 2px 20px rgba(0, 0, 0, 0.062);
@@ -70,11 +74,6 @@ const logout = () => {
 
 #cookieSvg g path {
   fill: rgb(97, 81, 81);
-}
-
-.cookieDescription {
-  text-align: center;
-  font-weight: 600;
 }
 
 .acceptButton {
@@ -126,3 +125,45 @@ const logout = () => {
   transform: translateY(4px);
 }
 </style>
+
+<script setup>
+import { ref, onMounted } from "vue";
+import { useRouter } from "vue-router";
+import { userRecordApi } from "../apiComposables/userRecordApiComposables";
+
+const { GetBookRecordsApi } = userRecordApi();
+const router = useRouter();
+const name = ref("未知");
+
+const recordContinuous = ref("");
+const recordDaysCount = ref("");
+const recordCount = ref("");
+
+const getBookRecords = async () => {
+  const token = localStorage.getItem("token");
+  name.value = localStorage.getItem("name");
+  if (!token) {
+    alert("請先登入");
+    router.push("/");
+  }
+  try {
+    const result = await GetBookRecordsApi(token);
+    recordContinuous.value = result.recordContinuous;
+    recordDaysCount.value = result.recordDaysCount;
+    recordCount.value = result.recordCount;
+  } catch (e) {
+    console.error("Get BookRecords Api", e);
+  }
+};
+
+onMounted(() => {
+  getBookRecords();
+});
+
+const logout = () => {
+  localStorage.removeItem("token");
+  localStorage.removeItem("name");
+  localStorage.removeItem("userEmail");
+  router.push("/");
+};
+</script>

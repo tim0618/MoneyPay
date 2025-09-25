@@ -54,7 +54,7 @@ namespace MoneyPayBackend.Service
         {
             var updateTypeDetail = new MoneyTypeDetailModel
             {
-                moneyTypeId = updateTypePay.moneyTypeId,
+                moneyTypeDetailId = updateTypePay.moneyTypeDetailId,
                 price = updateTypePay.price,
                 remarkId = updateTypePay.remarkId,
                 createTime = DateTime.Now
