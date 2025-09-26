@@ -140,19 +140,21 @@ const recordDaysCount = ref("");
 const recordCount = ref("");
 
 const getBookRecords = async () => {
-  const token = localStorage.getItem("token");
-  name.value = localStorage.getItem("name");
-  if (!token) {
-    alert("請先登入");
-    router.push("/");
-  }
   try {
+    const token = localStorage.getItem("token");
+    name.value = localStorage.getItem("name");
+    if (!token) {
+      throw new Error("No token found");
+    }
+
     const result = await GetBookRecordsApi(token);
     recordContinuous.value = result.recordContinuous;
     recordDaysCount.value = result.recordDaysCount;
     recordCount.value = result.recordCount;
   } catch (e) {
-    console.error("Get BookRecords Api", e);
+    alert("請先登入");
+    router.push("/login");
+    console.error(e);
   }
 };
 

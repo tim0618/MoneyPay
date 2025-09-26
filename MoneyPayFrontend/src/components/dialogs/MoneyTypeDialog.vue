@@ -34,6 +34,66 @@
   </div>
 </template>
 
+<script setup>
+import { ref, watch } from "vue";
+import { typeApi } from "../../apiComposables/typeApiComposables";
+
+const props = defineProps({
+  modelValue: Boolean, // 用 v-model 控制開關
+  type: Object, // 父層傳進來的資料
+});
+const emit = defineEmits(["update:modelValue", "refreshData"]);
+
+const { getTypeRemarkApi, addTypePay } = typeApi();
+const remarks = ref([]);
+const remarkId = ref("");
+const price = ref("");
+
+const addTransaction = async () => {
+  if (!price.value || price.value <= 0) {
+    (price.value = ""), (remarkId.value = "");
+    alert("填寫金額錯誤");
+    return;
+  }
+  if (!remarkId.value) {
+    (price.value = ""), (remarkId.value = "");
+    alert("尚未點選備註");
+    return;
+  }
+  try {
+    const token = localStorage.getItem("token");
+    if (!token) throw new Error("No token found");
+    const result = await addTypePay(token, {
+      price: price.value,
+      remarkId: remarkId.value,
+    });
+    emit("update:modelValue", false);
+    emit("refreshData");
+    (price.value = ""), (remarkId.value = "");
+  } catch (e) {
+    console.error("addTransaction Error", e);
+  }
+};
+
+// 使用 watch 監聽 modelValue（Dialog 開啟時抓資料）
+watch(
+  () => props.modelValue,
+  async (open) => {
+    if (open && props.type?.typeId) {
+      try {
+        const token = localStorage.getItem("token");
+        if (!token) throw new Error("No token found");
+
+        const result = await getTypeRemarkApi(token, props.type.typeId);
+        remarks.value = result;
+      } catch (e) {
+        console.error("GetTypeRemark Error", e);
+      }
+    }
+  }
+);
+</script>
+
 <style scoped>
 .overlay {
   position: fixed;
@@ -154,62 +214,3 @@
   border: 2px solid #2260ff;
 }
 </style>
-<script setup>
-import { ref, watch } from "vue";
-import { typeApi } from "../../apiComposables/typeApiComposables";
-
-const props = defineProps({
-  modelValue: Boolean, // 用 v-model 控制開關
-  type: Object, // 父層傳進來的資料
-});
-const emit = defineEmits(["update:modelValue","refreshData"]);
-
-const { getTypeRemarkApi, addTypePay } = typeApi();
-const remarks = ref([]);
-const remarkId = ref("");
-const price = ref("");
-
-const addTransaction = async () => {
-  if (!price.value || price.value <= 0) {
-    (price.value = ""), (remarkId.value = "");
-    alert("填寫金額錯誤");
-    return;
-  }
-  if (!remarkId.value) {
-    (price.value = ""), (remarkId.value = "");
-    alert("尚未點選備註");
-    return;
-  }
-  try {
-    const token = localStorage.getItem("token");
-    if (!token) throw new Error("No token found");
-    const result = await addTypePay(token, {
-      price: price.value,
-      remarkId: remarkId.value,
-    });
-    emit("update:modelValue", false);
-    emit("refreshData");
-    (price.value = ""), (remarkId.value = "");
-  } catch (e) {
-    console.error("addTransaction Error", e);
-  }
-};
-
-// 使用 watch 監聽 modelValue（Dialog 開啟時抓資料）
-watch(
-  () => props.modelValue,
-  async (open) => {
-    if (open && props.type?.id) {
-      try {
-        const token = localStorage.getItem("token");
-        if (!token) throw new Error("No token found");
-
-        const result = await getTypeRemarkApi(token, props.type.id);
-        remarks.value = result;
-      } catch (e) {
-        console.error("GetTypeRemark Error", e);
-      }
-    }
-  }
-);
-</script>

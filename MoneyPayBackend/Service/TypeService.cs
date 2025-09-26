@@ -21,7 +21,7 @@ namespace MoneyPayBackend.Service
 
             var result = types.Select(t => new GetTypePayResponse
             {
-                Id = t.moneyTypeId,
+                typeId = t.moneyTypeId,
                 type = t.type,
                 icon = t.icon,
                 color = t.color,
