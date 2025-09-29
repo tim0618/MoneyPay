@@ -11,7 +11,7 @@
       v-for="expenseType in expenseTypes"
       :key="expenseType.typeId"
     >
-      <span>O {{ expenseType.type }}</span>
+      <span>O {{ expenseType.typeName }}</span>
       <span @click="openTypeDialog(expenseType)">...</span>
     </div>
   </div>
@@ -23,7 +23,7 @@
       <span @click="handleEdit">+</span>
     </div>
     <div class="cardContent" v-for="incomeType in incomeTypes">
-      <span>O {{ incomeType.type }}</span>
+      <span>O {{ incomeType.typeName }}</span>
       <span>...</span>
     </div>
   </div>

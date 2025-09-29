@@ -22,7 +22,7 @@
         </svg>
       </button>
 
-      <h3 class="dialog-title">新增交易 - {{ type?.type }}</h3>
+      <h3 class="dialog-title">新增交易 - {{ type?.typeName }}</h3>
 
       <div class="content-section">
         <p class="section-title">交易金額</p>

@@ -28,7 +28,7 @@
           <input
             id="typeName"
             type="text"
-            :value="type.type"
+            :value="type.typeName"
             @input="$emit('update:type-name', $event.target.value)"
             class="input-editable"
             placeholder="請輸入分類名稱"

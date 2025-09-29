@@ -22,7 +22,7 @@ namespace MoneyPayBackend.Service
             var result = types.Select(t => new GetTypePayResponse
             {
                 typeId = t.moneyTypeId,
-                type = t.type,
+                typeName = t.typeName,
                 icon = t.icon,
                 color = t.color,
                 categoryType = t.categoryType,
@@ -65,5 +65,6 @@ namespace MoneyPayBackend.Service
         {
             return _typeRepo.DeleteTypePay(deleteTypePay.Id);
         }
+
     }
 }

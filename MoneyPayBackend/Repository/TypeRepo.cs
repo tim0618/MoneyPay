@@ -48,7 +48,7 @@ public class TypeRepo : ITypeRepo
              {
                  moneyTypeId = mt.moneyTypeId,
                  email = mt.email,
-                 type = mt.type,
+                 typeName = mt.typeName,
                  icon = mt.icon,
                  color = mt.color,
                  categoryType = mt.categoryType,
