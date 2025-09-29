@@ -27,12 +27,6 @@
       <span>...</span>
     </div>
   </div>
-
-  <p>GetTypeRemark</p>
-
-  <p>AddTypePay</p>
-  <p>UpdateTypePay</p>
-  <p>DeleteTypePay</p>
 </template>
 
 <script setup>
@@ -55,7 +49,6 @@ const getMoneyType = async () => {
     }
     const result = await getMoneyTypesSumApi(token);
     moneyType.value = result;
-    console.log(moneyType.value);
   } catch (e) {
     router.push("/");
     alert("請先登入");
