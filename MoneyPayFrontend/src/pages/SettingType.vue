@@ -11,11 +11,19 @@
       v-for="expenseType in expenseTypes"
       :key="expenseType.typeId"
     >
-      <span>O {{ expenseType.typeName }}</span>
+      <span>
+        <q-icon
+          v-if="expenseType.icon"
+          style="padding: 5px 0px"
+          :name="expenseType.icon"
+          size="24px"
+          color="black"
+        />
+        {{ expenseType.typeName }}</span
+      >
       <span @click="openTypeDialog(expenseType)">...</span>
     </div>
   </div>
-  <SettingMoneyTypeDialog v-model="showDialog" :type="selectedType" />
 
   <div class="card">
     <div class="cardContent">
@@ -23,10 +31,20 @@
       <span @click="handleEdit">+</span>
     </div>
     <div class="cardContent" v-for="incomeType in incomeTypes">
-      <span>O {{ incomeType.typeName }}</span>
-      <span>...</span>
+      <span
+        ><q-icon
+          v-if="incomeType.icon"
+          style="padding: 5px 0px"
+          :name="incomeType.icon"
+          size="24px"
+          color="black"
+        />
+        {{ incomeType.typeName }}</span
+      >
+      <span @click="openTypeDialog(incomeType)">...</span>
     </div>
   </div>
+  <SettingMoneyTypeDialog v-model="showDialog" :type="selectedType" />
 </template>
 
 <script setup>
@@ -49,6 +67,7 @@ const getMoneyType = async () => {
     }
     const result = await getMoneyTypesSumApi(token);
     moneyType.value = result;
+    console.log(moneyType.value);
   } catch (e) {
     router.push("/");
     alert("請先登入");
@@ -63,6 +82,7 @@ onMounted(() => {
 const expenseTypes = computed(() =>
   moneyType.value.filter((t) => t.categoryType === "Expense")
 );
+
 const incomeTypes = computed(() =>
   moneyType.value.filter((t) => t.categoryType === "Income")
 );
