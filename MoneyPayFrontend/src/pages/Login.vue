@@ -30,7 +30,7 @@
   </div>
 </template>
 <script setup>
-import LoginForm from "../Components/forms/LoginForm.vue";
+import LoginForm from "../components/forms/LoginForm.vue";
 import RegisterForm from "../components/forms/RegisterForm.vue";
 import { ref } from "vue";
 
