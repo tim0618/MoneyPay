@@ -4,7 +4,8 @@ MoneyPay/
 ├─ MoneyPayBackend.Test/   ← 後端測試專案資料夾
 ├─ backend/                ← ASP.NET Core 後端專案資料夾
 ├─ frontend/               ← Vue / React 前端專案資料夾
-└─ README.md
+├─ README.md
+└─ docker-compose.yml
 
 
 
@@ -31,3 +32,23 @@ dotnet add package xunit
 dotnet add package xunit.runner.visualstudio
 # 3️⃣ 模擬物件 (Mock)，用來替代 Repository 或其他依賴，不用真的連資料庫
 dotnet add package Moq
+
+
+frontend point
+emit prop
+compute onmount
+接API
+{} 要return
+
+小技術
+CSS: grid
+.container {
+    display:grid;
+    grid-template-columns: repeat(3,100px) => .container 會被切成 3 個直欄，每個欄寬 100px。
+    grid-template-columns: 100px 200px auto; → .container 有三個欄位：第一欄固定 100px、第二欄固定 200px、第三欄自動填滿剩下空間
+}
+rf 單位
+grid-template-columns: 1fr 1fr 1fr; => 1/3
+grid-template-columns: 2fr 1fr 1fr; => 1/4
+
+
