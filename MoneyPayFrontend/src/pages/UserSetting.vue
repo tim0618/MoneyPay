@@ -30,7 +30,7 @@
       </div>
     </div>
 
-    <button class="acceptButton">Allow</button>
+    <button class="settingButton">設定進度條</button>
   </div>
 
   <p>目標存款/y $50000 ⚙ 進度條</p>
@@ -76,7 +76,7 @@
   fill: rgb(97, 81, 81);
 }
 
-.acceptButton {
+.settingButton {
   width: 80px;
   height: 30px;
   background-color: #7b57ff;
@@ -90,7 +90,7 @@
   transition: all 0.6s ease;
 }
 
-.acceptButton:hover {
+.settingButton:hover {
   background-color: #9173ff;
   box-shadow: 0 10px 15px -3px #977ef3, 0 4px 6px -2px #977ef3;
   transition-duration: 0.2s;
