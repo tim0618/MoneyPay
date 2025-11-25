@@ -3,7 +3,7 @@
     <q-page-container>
       <router-view />
     </q-page-container>
-    <q-footer style="height: 10vh">
+    <q-footer class="bg-transparent" style="height: 10vh">
       <div id="navbody">
         <form action="#">
           <ul class="ul">
@@ -128,20 +128,24 @@ const goUserSetting = () => {
 <style scoped>
 #navbody {
   height: 100%;
-  background-color: rgb(255, 255, 255);
-  box-shadow: 0px 10px 15px rgba(0, 0, 0, 0.041);
-  align-items: end;
+  background-color: transparent;
+  align-items: flex-end;
   justify-content: center;
   display: flex;
+  padding-bottom: 20px;
 }
 
 .ul {
+  background-color: white;
+  width: auto;
+  min-width: 300px;
+  border-radius: 50px;
+  box-shadow: 0px 10px 15px rgba(0, 0, 0, 0.3);
   list-style: none;
-  width: 100%;
-  background-color: transparent;
   display: flex;
   justify-content: space-between;
-  margin-top: 5px;
+  padding: 0 20px;
+  margin: 0;
 }
 
 .ul .li {

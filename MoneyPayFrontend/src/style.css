@@ -14,7 +14,7 @@ html {
 
 .app-container {
     width: 100%;
-    max-width: 400px;
+    max-width: 450px;
     min-height: 100vh;
     margin: 0 auto;  /* 置中 */
     background-color: #fff;
