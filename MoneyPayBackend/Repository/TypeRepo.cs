@@ -48,7 +48,7 @@ public class TypeRepo : ITypeRepo
              {
                  moneyTypeId = mt.moneyTypeId,
                  email = mt.email,
-                 type = mt.type,
+                 typeName = mt.typeName,
                  icon = mt.icon,
                  color = mt.color,
                  categoryType = mt.categoryType,
@@ -76,7 +76,7 @@ public class TypeRepo : ITypeRepo
 
     public bool UpdateTypePay(MoneyTypeDetailModel updateTypeDetail)
     {
-        var typeDetail = _context.MoneyTypeDetail.FirstOrDefault(md => md.moneyTypeId == updateTypeDetail.moneyTypeId);
+        var typeDetail = _context.MoneyTypeDetail.FirstOrDefault(md => md.moneyTypeDetailId == updateTypeDetail.moneyTypeDetailId);
         if (typeDetail == null) return false;
 
         typeDetail.price = updateTypeDetail.price;
@@ -88,7 +88,7 @@ public class TypeRepo : ITypeRepo
 
     public bool DeleteTypePay(int typeDetailId)
     {
-        var typeDetail = _context.MoneyTypeDetail.FirstOrDefault(md => md.moneyTypeId == typeDetailId);
+        var typeDetail = _context.MoneyTypeDetail.FirstOrDefault(md => md.moneyTypeDetailId == typeDetailId);
         if (typeDetail == null) return false;
 
         _context.MoneyTypeDetail.Remove(typeDetail);

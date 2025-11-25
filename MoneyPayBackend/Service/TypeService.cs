@@ -21,8 +21,8 @@ namespace MoneyPayBackend.Service
 
             var result = types.Select(t => new GetTypePayResponse
             {
-                Id = t.moneyTypeId,
-                type = t.type,
+                typeId = t.moneyTypeId,
+                typeName = t.typeName,
                 icon = t.icon,
                 color = t.color,
                 categoryType = t.categoryType,
@@ -54,7 +54,7 @@ namespace MoneyPayBackend.Service
         {
             var updateTypeDetail = new MoneyTypeDetailModel
             {
-                moneyTypeId = updateTypePay.moneyTypeId,
+                moneyTypeDetailId = updateTypePay.moneyTypeDetailId,
                 price = updateTypePay.price,
                 remarkId = updateTypePay.remarkId,
                 createTime = DateTime.Now
@@ -65,5 +65,6 @@ namespace MoneyPayBackend.Service
         {
             return _typeRepo.DeleteTypePay(deleteTypePay.Id);
         }
+
     }
 }

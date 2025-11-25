@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const API_BASE_URL = "http://localhost:5140/api/Type";
+const API_BASE_URL = "http://localhost:5140/api/MoneyType";
 
 export const typeApi = () => {
   const getMoneyTypesSumApi = async (token) => {

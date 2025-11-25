@@ -5,7 +5,7 @@
     @click="$emit('typeSelect', typeDetail)"
   >
     <div class="buttonContent">
-      <span class="label">{{ typeDetail.type }}</span>
+      <span class="label">{{ typeDetail.typeName }}</span>
       <q-icon
         style="padding: 10px 0px"
         :name="typeDetail.icon"

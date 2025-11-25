@@ -1,14 +1,12 @@
 using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.SqlServer;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using MoneyPayBackend.Service;
 using MoneyPayBackend.IRepo;
 using MoneyPayBackend.IService;
 using MoneyPayBackend.Repo;
-using MoneyPayBackend.Service;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -71,6 +69,8 @@ builder.Services.AddScoped<IUserRepo, UserRepo>();
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<ITypeRepo, TypeRepo>();
 builder.Services.AddScoped<ITypeService, TypeService>();
+builder.Services.AddScoped<IUserRecordRepo, UserRecordRepo>();
+builder.Services.AddScoped<IUserRecordService, UserRecordService>();
 
 // JWT 驗證
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)

@@ -13,7 +13,7 @@
         <div class="btnGrid">
           <MoneyTypeButton
             v-for="type in expenseTypes"
-            :key="type.id"
+            :key="type.typeId"
             :typeDetail="type"
             @typeSelect="openTypeDialog"
           />
@@ -25,7 +25,7 @@
           <!-- <MoneyTypeButton v-for="type in types" :key="type.id" v-bind="type" /> -->
           <MoneyTypeButton
             v-for="type in incomeTypes"
-            :key="type.id"
+            :key="type.typeId"
             :typeDetail="type"
             @typeSelect="openTypeDialog"
           />

@@ -14,12 +14,12 @@ public class UserRepo : IUserRepo
 
     public UserModel GetUserByEmail(string email)
     {
-        return _context.User.FirstOrDefault(u => u.email == email)!;
+        return _context.Users.FirstOrDefault(u => u.email == email)!;
     }
 
     public bool AddUser(UserModel user)
     {
-        _context.User.Add(user);
+        _context.Users.Add(user);
         return _context.SaveChanges() > 0;
     }
 
