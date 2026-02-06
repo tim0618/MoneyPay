@@ -2,29 +2,30 @@
   <div class="q-pa-md">
     <div v-if="loading">載入中...</div>
     <div v-else>
-      <div v-if="types.length == 0">目前沒有付費種類</div>
+      <div v-if="moneyStore.list.length == 0">目前沒有付費種類</div>
       <div v-else>
+        
         <span style="display: flex; justify-content: center">本月</span>
         <div class="expenseTitle">
-          <span style="display: flex; justify-content: center; padding: 20px"
-            >支出 ${{ expenseTypesTotal }}</span
-          >
+          <span style="display: flex; justify-content: center; padding: 20px">
+            支出 ${{ moneyStore.totalExpense }}
+          </span>
         </div>
         <div class="btnGrid">
           <MoneyTypeButton
-            v-for="type in expenseTypes"
+            v-for="type in moneyStore.expenseList"
             :key="type.typeId"
             :typeDetail="type"
             @typeSelect="openTypeDialog"
           />
         </div>
-        <span style="display: flex; justify-content: center; padding: 20px"
-          >收入 ${{ incomeTypesTotal }}</span
-        >
+
+        <span style="display: flex; justify-content: center; padding: 20px">
+           收入 ${{ moneyStore.totalIncome }}
+        </span>
         <div class="btnGrid">
-          <!-- <MoneyTypeButton v-for="type in types" :key="type.id" v-bind="type" /> -->
           <MoneyTypeButton
-            v-for="type in incomeTypes"
+            v-for="type in moneyStore.incomeList"
             :key="type.typeId"
             :typeDetail="type"
             @typeSelect="openTypeDialog"
@@ -32,26 +33,31 @@
         </div>
       </div>
     </div>
+    
     <MoneyTypeDialog
       v-model="showDialog"
       :type="selectedType"
-      @refreshData="fetchMoneyTypes"
     />
   </div>
 </template>
+
 <script setup>
-import { onMounted, ref, computed } from "vue";
-import { typeApi } from "../apiComposables/typeApiComposables";
+import { onMounted, ref } from "vue";
+// 1. 移除 apiComposables，改引入 Store
+import { useMoneyStore } from "../stores/moneyStore"; 
 import { useRouter } from "vue-router";
 import MoneyTypeButton from "../components/buttons/MoneyTypeButton.vue";
 import MoneyTypeDialog from "../components/dialogs/MoneyTypeDialog.vue";
 
-const { getMoneyTypesSumApi } = typeApi();
-
 const router = useRouter();
-const types = ref([]);
-const loading = ref(true);
 
+// 2. 初始化 Store
+const moneyStore = useMoneyStore();
+
+// 這些原本是計算用的 computed，現在因為 Store 的 getters 幫你算好了，
+// 我們可以直接在 template 用 moneyStore.xxx，所以這裡可以刪除大量的 computed 程式碼！
+
+const loading = ref(true);
 const showDialog = ref(false);
 const selectedType = ref(null);
 
@@ -60,45 +66,25 @@ function openTypeDialog(type) {
   selectedType.value = type;
 }
 
-const fetchMoneyTypes = async () => {
-  try {
-    loading.value = true; // 在開始載入時設定為 true
-    const token = localStorage.getItem("token");
-    if (!token) {
-      throw new Error("No token found");
-    }
-    const result = await getMoneyTypesSumApi(token);
-    types.value = result;
-  } catch (error) {
-    console.error(error);
-    alert("請先登入");
-    router.push("/login");
-  } finally {
+// 3. 簡化版的 init 流程
+const initPage = () => {
+  loading.value = true;
+  
+  // 呼叫 Store 的初始化動作 (載入 Mock Data)
+  moneyStore.initData();
+
+  // 模擬一點點延遲讓 loading 轉一下 (非必要，看你心情)
+  setTimeout(() => {
     loading.value = false;
-  }
+  }, 300);
 };
 
 onMounted(() => {
-  fetchMoneyTypes();
+  initPage();
 });
 
-const expenseTypes = computed(() =>
-  types.value.filter((t) => t.categoryType === "Expense")
-);
-
-const incomeTypes = computed(() => {
-  return types.value.filter((t) => {
-    return t.categoryType === "Income";
-  });
-});
-
-const expenseTypesTotal = computed(() =>
-  expenseTypes.value.reduce((sum, item) => sum + item.totalPay, 0)
-);
-
-const incomeTypesTotal = computed(() =>
-  incomeTypes.value.reduce((sum, item) => sum + item.totalPay, 0)
-);
+// 原本的 expenseTypes, incomeTypes 等 computed 都不需要了
+// 原本的 fetchMoneyTypes 不需要了
 </script>
 <style scoped>
 .btnGrid {

@@ -1,14 +1,12 @@
 <template>
-  <!-- https://uiverse.io/Cobp/horrible-quail-18 -->
-  <p>分類管理</p>
   <div class="card">
     <div class="cardContent">
       <span>支出</span>
-      <span>+</span>
+      <span @click="handleAddType">+</span>
     </div>
     <div
       class="cardContent"
-      v-for="expenseType in expenseTypes"
+      v-for="expenseType in moneyStore.expenseList"
       :key="expenseType.typeId"
     >
       <span>
@@ -17,10 +15,10 @@
           style="padding: 5px 0px"
           :name="expenseType.icon"
           size="24px"
-          color="black"
+          :style="{ color: expenseType.color }"
         />
-        {{ expenseType.typeName }}</span
-      >
+        {{ expenseType.typeName }}
+      </span>
       <span @click="openTypeDialog(expenseType)">...</span>
     </div>
   </div>
@@ -28,70 +26,59 @@
   <div class="card">
     <div class="cardContent">
       <span>收入</span>
-      <span @click="handleEdit">+</span>
+      <span @click="handleAddType">+</span>
     </div>
-    <div class="cardContent" v-for="incomeType in incomeTypes">
-      <span
-        ><q-icon
+    <div class="cardContent" v-for="incomeType in moneyStore.incomeList">
+      <span>
+        <q-icon
           v-if="incomeType.icon"
           style="padding: 5px 0px"
           :name="incomeType.icon"
           size="24px"
-          color="black"
+          :style="{ color: incomeType.color }"
         />
-        {{ incomeType.typeName }}</span
-      >
+        {{ incomeType.typeName }}
+      </span>
       <span @click="openTypeDialog(incomeType)">...</span>
     </div>
   </div>
-  <SettingMoneyTypeDialog v-model="showDialog" :type="selectedType" />
+
+  <SettingMoneyTypeDialog 
+    v-model="showDialog" 
+    :type="selectedType" 
+  />
 </template>
 
 <script setup>
-import { computed, onMounted, ref } from "vue";
+import { onMounted, ref } from "vue";
 import { useRouter } from "vue-router";
-import { typeApi } from "../apiComposables/typeApiComposables";
+// 1. 引入 Store
+import { useMoneyStore } from "../stores/moneyStore";
 import SettingMoneyTypeDialog from "../components/dialogs/SettingMoneyTypeDialog.vue";
 
 const router = useRouter();
-const { getMoneyTypesSumApi } = typeApi();
-const moneyType = ref([]);
+const moneyStore = useMoneyStore();
+
 const showDialog = ref(false);
 const selectedType = ref(null);
 
-const getMoneyType = async () => {
-  try {
-    const token = localStorage.getItem("token");
-    if (!token) {
-      throw new Error("No token found");
-    }
-    const result = await getMoneyTypesSumApi(token);
-    moneyType.value = result;
-    console.log(moneyType.value);
-  } catch (e) {
-    router.push("/");
-    alert("請先登入");
-    console.error("Get Money Type", e);
-  }
-};
-
 onMounted(() => {
-  getMoneyType();
+  // 記得初始化資料
+  moneyStore.initData();
 });
 
-const expenseTypes = computed(() =>
-  moneyType.value.filter((t) => t.categoryType === "Expense")
-);
-
-const incomeTypes = computed(() =>
-  moneyType.value.filter((t) => t.categoryType === "Income")
-);
+// computed 不用了，直接在 template 用 store.expenseList 即可
 
 function openTypeDialog(type) {
-  showDialog.value = true;
   selectedType.value = type;
+  showDialog.value = true;
 }
+
+const handleAddType = () => {
+  alert('新增分類功能待實作'); 
+};
 </script>
+
 <style>
 .card {
   background-color: rgb(255, 255, 255);

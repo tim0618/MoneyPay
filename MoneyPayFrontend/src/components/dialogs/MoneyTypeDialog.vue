@@ -6,17 +6,7 @@
   >
     <div class="dialog">
       <button class="closeBtn" @click="$emit('update:modelValue', false)">
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          width="24"
-          height="24"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          stroke-width="2"
-          stroke-linecap="round"
-          stroke-linejoin="round"
-        >
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
           <line x1="18" y1="6" x2="6" y2="18"></line>
           <line x1="6" y1="6" x2="18" y2="18"></line>
         </svg>
@@ -33,9 +23,7 @@
         </div>
 
         <div class="detail-row editable input-amount-row">
-          <label for="priceInput" class="detail-label input-label-large"
-            >輸入金額 (NTD)：</label
-          >
+          <label for="priceInput" class="detail-label input-label-large">輸入金額 (NTD)：</label>
           <textarea
             id="priceInput"
             v-model="price"
@@ -67,22 +55,15 @@
               <span class="radio-label">{{ remark.remark }}</span>
             </span>
           </label>
+          <div v-if="remarks.length === 0" style="color: #999; font-size: 14px;">
+            (此分類暫無測試用備註)
+          </div>
         </div>
       </div>
 
       <div class="action-buttons justify-center">
-        <button class="btn btn-save" @click="addTransaction">
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            width="18"
-            height="18"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            stroke-width="2"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-          >
+        <button class="btn btn-save" @click="handleAdd">
+          <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
             <path d="M12 5v14M5 12h14"></path>
           </svg>
           確認提交
@@ -90,70 +71,69 @@
       </div>
     </div>
   </div>
-
-  <!-- <p>UpdateTypePay</p>
-  <p>DeleteTypePay</p> -->
 </template>
+
 <script setup>
 import { ref, watch } from "vue";
-import { typeApi } from "../../apiComposables/typeApiComposables";
+// 1. 引入 Store
+import { useMoneyStore } from "../../stores/moneyStore";
 
 const props = defineProps({
-  modelValue: Boolean, // 用 v-model 控制開關
-  type: Object, // 父層傳進來的資料
+  modelValue: Boolean,
+  type: Object,
 });
-const emit = defineEmits(["update:modelValue", "refreshData"]);
 
-const { getTypeRemarkApi, addTypePay } = typeApi();
+// refreshData 不需要了，因為 Pinia 會自動更新畫面
+const emit = defineEmits(["update:modelValue"]);
+
+// 2. 初始化 Store
+const moneyStore = useMoneyStore();
+
 const remarks = ref([]);
 const remarkId = ref("");
 const price = ref("");
 
-const addTransaction = async () => {
-  if (!price.value || price.value <= 0) {
-    (price.value = ""), (remarkId.value = "");
+const handleAdd = () => {
+  // 驗證
+  if (!price.value || Number(price.value) <= 0) {
     alert("填寫金額錯誤");
     return;
   }
   if (!remarkId.value) {
-    (price.value = ""), (remarkId.value = "");
     alert("尚未點選備註");
     return;
   }
-  try {
-    const token = localStorage.getItem("token");
-    if (!token) throw new Error("No token found");
-    const result = await addTypePay(token, {
-      price: price.value,
-      remarkId: remarkId.value,
-    });
-    emit("update:modelValue", false);
-    emit("refreshData");
-    (price.value = ""), (remarkId.value = "");
-  } catch (e) {
-    console.error("addTransaction Error", e);
-  }
+
+  // 3. 呼叫 Store Action
+  moneyStore.addTransaction({
+    typeId: props.type.typeId, // 告訴 Store 是哪個分類
+    price: price.value,
+    remarkId: remarkId.value
+  });
+
+  // 4. 重置與關閉
+  price.value = "";
+  remarkId.value = "";
+  emit("update:modelValue", false);
+  
+  // 這裡不需要 emit('refreshData')，因為父層已經綁定 Pinia Store 了
 };
 
-// 使用 watch 監聽 modelValue（Dialog 開啟時抓資料）
+// 監聽 Dialog 開啟
 watch(
   () => props.modelValue,
-  async (open) => {
+  (open) => {
     if (open && props.type?.typeId) {
-      try {
-        const token = localStorage.getItem("token");
-        if (!token) throw new Error("No token found");
-
-        const result = await getTypeRemarkApi(token, props.type.typeId);
-        remarks.value = result;
-      } catch (e) {
-        console.error("GetTypeRemark Error", e);
-      }
+      // 5. 改從 Store 拿備註資料
+      remarks.value = moneyStore.getRemarksByTypeId(props.type.typeId);
+      
+      // 重置輸入框
+      price.value = "";
+      remarkId.value = "";
     }
   }
 );
 </script>
-
 <style scoped>
 /* 基礎疊層和滑動動畫 */
 .overlay {

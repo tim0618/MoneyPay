@@ -14,7 +14,17 @@ import 'quasar/dist/quasar.css'
 // 引入 MDI 圖示 CSS
 import '@quasar/extras/mdi-v6/mdi-v6.css'
 
+import { createPinia } from 'pinia'
+import piniaPluginPersistedstate from 'pinia-plugin-persistedstate'
+import VueApexCharts from "vue3-apexcharts";
+
 const myApp = createApp(App);
+
+
+const pinia = createPinia()
+pinia.use(piniaPluginPersistedstate)
+myApp.use(pinia)
+myApp.use(VueApexCharts)
 
 myApp
   .use(router)
