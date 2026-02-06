@@ -86,8 +86,9 @@ public class UserService : IUserService
             issuer: "MoneyPay",
             audience: "MoneyPay",
             claims: claims,
-            expires: DateTime.Now.AddHours(1),
-            signingCredentials: creds);
+            expires: DateTime.Now.AddDays(100),
+            signingCredentials: creds
+        );
 
         return new JwtSecurityTokenHandler().WriteToken(token);
     }
