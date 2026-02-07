@@ -7,7 +7,7 @@ export const MOCK_MONEY_TYPE_SUM = [
     "icon": "mdi-silverware-fork-knife",
     "color": "#FF7043",
     "categoryType": "Expense",
-    "totalPay": 400
+    "totalPay": 0
   },
   {
     "typeId": 2,
@@ -15,7 +15,7 @@ export const MOCK_MONEY_TYPE_SUM = [
     "icon": "mdi-car",
     "color": "#29B6F6",
     "categoryType": "Expense",
-    "totalPay": 500
+    "totalPay": 0
   },
   {
     "typeId": 3,
