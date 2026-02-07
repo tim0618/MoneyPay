@@ -4,41 +4,44 @@
     class="overlay"
     @click.self="$emit('update:modelValue', false)"
   >
-    <div class="dialog">
+    <div class="dialog" :style="{ '--theme-color': type?.color || '#00ffcc' }">
+      <div class="dialog-header-deco"></div>
+
       <button class="closeBtn" @click="$emit('update:modelValue', false)">
-        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <line x1="18" y1="6" x2="6" y2="18"></line>
-          <line x1="6" y1="6" x2="18" y2="18"></line>
-        </svg>
+        [ X ]
       </button>
 
-      <h3 class="dialog-title">新增交易 - {{ type?.typeName }}</h3>
+      <h3 class="dialog-title">
+        <span class="blinking-cursor">></span> ADD_TRANSACTION :: {{ type?.typeName }}
+      </h3>
 
       <div class="content-section">
-        <p class="section-title">交易金額</p>
-
         <div class="detail-row">
-          <span class="detail-label">本分類總支出：</span>
+           <span class="detail-label">[ TOTAL ]</span>
           <span class="detail-value text-red">{{ type?.totalPay || 0 }}</span>
         </div>
 
-        <div class="detail-row editable input-amount-row">
-          <label for="priceInput" class="detail-label input-label-large">輸入金額 (NTD)：</label>
-          <textarea
-            id="priceInput"
-            v-model="price"
-            @input="price = price.replace(/[^0-9]/g, '')"
-            class="price-input input-editable"
-            placeholder="0"
-            rows="1"
-          ></textarea>
+        <div class="input-group q-mt-md">
+          <label for="priceInput" class="input-label">INPUT_AMOUNT //</label>
+          <div class="input-wrapper">
+             <span class="currency-symbol">$</span>
+             <input
+              id="priceInput"
+              v-model="price"
+              @input="price = price.replace(/[^0-9]/g, '')"
+              class="cyber-input"
+              placeholder="0"
+              inputmode="numeric" 
+              autocomplete="off"
+            />
+          </div>
         </div>
       </div>
 
       <div class="content-section remarks-section">
-        <p class="section-title">選擇備註 (子分類)：</p>
+        <p class="section-title">SELECT_TAG //</p>
 
-        <div class="remarks-grid radio-inputs-container">
+        <div class="remarks-grid">
           <label
             v-for="remark in remarks"
             class="remark-input-label"
@@ -51,28 +54,218 @@
               :value="remark.remarkId"
               v-model="remarkId"
             />
-            <span class="radio-tile radio-tile-modern">
-              <span class="radio-label">{{ remark.remark }}</span>
-            </span>
+            <div class="cyber-tile">
+              {{ remark.remark }}
+            </div>
           </label>
-          <div v-if="remarks.length === 0" style="color: #999; font-size: 14px;">
-            (此分類暫無測試用備註)
+          
+          <div v-if="remarks.length === 0" class="no-data-text">
+            // NULL_DATA
           </div>
         </div>
       </div>
 
-      <div class="action-buttons justify-center">
-        <button class="btn btn-save" @click="handleAdd">
-          <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M12 5v14M5 12h14"></path>
-          </svg>
-          確認提交
+      <div class="action-buttons">
+        <button class="cyber-btn-save" @click="handleAdd">
+          INITIATE_TRANSFER
         </button>
       </div>
     </div>
   </div>
 </template>
 
+<style scoped>
+/* 基礎疊層 */
+.overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.85); /* 背景更黑 */
+  display: flex;
+  justify-content: center;
+  align-items: flex-end;
+  backdrop-filter: blur(5px); /* 模糊背景 */
+  z-index: 9999;
+}
+
+/* 對話框本體 */
+.dialog {
+  width: 100%;
+  max-width: 500px;
+  height: auto;
+  max-height: 90vh;
+  
+  /* Cyberpunk 風格面板 */
+  background: #0a0a0a;
+  border-top: 2px solid var(--theme-color);
+  border-left: 1px solid #333;
+  border-right: 1px solid #333;
+  
+  /* 直角 */
+  border-radius: 0; 
+  padding: 30px 20px 20px 20px;
+  animation: slideUp 0.3s cubic-bezier(0.2, 1, 0.3, 1);
+  position: relative;
+  box-shadow: 0 -5px 20px rgba(0, 255, 204, 0.1);
+  display: flex;
+  flex-direction: column;
+}
+
+/* 頂部裝飾條 (斜紋) */
+.dialog-header-deco {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 4px;
+  background: repeating-linear-gradient(
+    45deg,
+    var(--theme-color),
+    var(--theme-color) 10px,
+    transparent 10px,
+    transparent 20px
+  );
+  opacity: 0.5;
+}
+
+.closeBtn {
+  position: absolute;
+  top: 15px;
+  right: 15px;
+  border: none;
+  background: transparent;
+  color: #666;
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 1.2rem;
+  cursor: pointer;
+}
+
+.dialog-title {
+  font-size: 1.2rem;
+  color: var(--theme-color);
+  margin-bottom: 20px;
+  text-transform: uppercase;
+  border-bottom: 1px solid #333;
+  padding-bottom: 10px;
+}
+
+.blinking-cursor {
+  animation: blink 1s step-end infinite;
+}
+@keyframes blink { 50% { opacity: 0; } }
+
+/* 內容區塊 */
+.content-section {
+  background: rgba(255, 255, 255, 0.03); /* 極淡的白，提亮背景 */
+  padding: 15px;
+  border: 1px solid #222;
+  margin-bottom: 20px;
+}
+
+.section-title, .input-label, .detail-label {
+  color: #888;
+  font-size: 0.9rem;
+  margin-bottom: 10px;
+  display: block;
+}
+
+.detail-value {
+  float: right;
+  font-size: 1.2rem;
+  font-weight: bold;
+}
+.text-red { color: #ff4d4d; text-shadow: 0 0 5px #ff4d4d; }
+
+/* 輸入框設計 */
+.input-wrapper {
+  display: flex;
+  align-items: center;
+  border-bottom: 2px solid var(--theme-color);
+  background: rgba(0,0,0,0.3);
+}
+
+.currency-symbol {
+  font-size: 1.5rem;
+  color: var(--theme-color);
+  padding-left: 10px;
+}
+
+.cyber-input {
+  width: 100%;
+  background: transparent;
+  border: none;
+  color: white;
+  font-size: 2.5rem; /* 超大數字 */
+  text-align: right;
+  padding: 10px;
+  font-family: 'Share Tech Mono', monospace;
+}
+.cyber-input::placeholder { color: #333; }
+
+/* 標籤 (Radio Tiles) */
+.remarks-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+  gap: 10px;
+}
+
+.radio-input { display: none; }
+
+.cyber-tile {
+  background: #111;
+  color: #888;
+  border: 1px solid #333;
+  padding: 10px 5px;
+  text-align: center;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: all 0.2s;
+  /* 直角 */
+  border-radius: 0; 
+}
+
+/* 選中狀態 */
+.radio-input:checked + .cyber-tile {
+  background: rgba(0, 255, 204, 0.1);
+  border-color: var(--theme-color);
+  color: var(--theme-color);
+  box-shadow: 0 0 8px var(--theme-color);
+  text-shadow: 0 0 5px var(--theme-color);
+}
+
+.no-data-text { color: #444; font-size: 0.8rem; }
+
+/* 底部按鈕 */
+.action-buttons {
+  margin-top: auto;
+  padding-top: 20px;
+}
+
+.cyber-btn-save {
+  width: 100%;
+  padding: 15px;
+  background: transparent;
+  border: 1px solid var(--theme-color);
+  color: var(--theme-color);
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 1.2rem;
+  font-weight: bold;
+  cursor: pointer;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  transition: all 0.3s;
+}
+
+.cyber-btn-save:hover, .cyber-btn-save:active {
+  background: var(--theme-color);
+  color: #000;
+  box-shadow: 0 0 20px var(--theme-color);
+}
+
+@keyframes slideUp {
+  from { transform: translateY(100%); }
+  to { transform: translateY(0); }
+}
+</style>
 <script setup>
 import { ref, watch } from "vue";
 // 1. 引入 Store
@@ -134,224 +327,3 @@ watch(
   }
 );
 </script>
-<style scoped>
-/* 基礎疊層和滑動動畫 */
-.overlay {
-  position: fixed;
-  inset: 0;
-  background: rgba(0, 0, 0, 0.7);
-  display: flex;
-  justify-content: center;
-  align-items: flex-end;
-  backdrop-filter: blur(8px);
-  z-index: 9999;
-}
-.dialog {
-  width: 100%;
-  max-width: 500px;
-  height: 90%;
-  background: #ffffff;
-  border-radius: 16px 16px 0 0;
-  padding: 30px 20px 20px 20px;
-  animation: slideUp 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
-  position: relative;
-  box-shadow: 0 -10px 30px rgba(0, 0, 0, 0.1);
-  display: flex;
-  flex-direction: column;
-  overflow-y: auto;
-}
-.closeBtn {
-  position: absolute;
-  top: 15px;
-  right: 15px;
-  border: none;
-  background: transparent;
-  cursor: pointer;
-  color: #333;
-  padding: 5px;
-  border-radius: 50%;
-  transition: background 0.2s;
-}
-.closeBtn:hover {
-  background: #eee;
-}
-.closeBtn svg {
-  display: block;
-  width: 24px;
-  height: 24px;
-}
-
-@keyframes slideUp {
-  from {
-    transform: translateY(100%);
-  }
-  to {
-    transform: translateY(0);
-  }
-}
-
-/* --- 結構與排版樣式 --- */
-
-.dialog-title {
-  font-size: 1.5rem;
-  font-weight: 700;
-  color: #1a1a1a;
-  margin-bottom: 20px;
-  border-bottom: 2px solid #f0f0f0;
-  padding-bottom: 10px;
-}
-
-.content-section {
-  background: #f8f8f8;
-  padding: 15px;
-  border-radius: 12px;
-  margin-bottom: 20px;
-}
-
-.section-title {
-  font-size: 1.1rem;
-  font-weight: 600;
-  color: #444;
-  margin-bottom: 15px;
-  padding-bottom: 5px;
-  border-bottom: 1px dashed #e0e0e0;
-}
-
-.detail-row {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 8px 0;
-  font-size: 0.95rem;
-}
-
-.detail-label {
-  font-weight: 500;
-  color: #666;
-  min-width: 60px;
-}
-.input-label-large {
-  font-size: 1.1rem;
-  font-weight: 600;
-  color: #333;
-}
-
-.detail-value {
-  color: #1a1a1a;
-  font-weight: 600;
-}
-.text-red {
-  color: #ff4d4d;
-  font-size: 1.2rem;
-}
-
-/* 可編輯金額輸入框的樣式 */
-.price-input {
-  flex-grow: 1;
-  height: auto; /* 讓單行文字框更合適 */
-  min-height: 40px;
-  resize: none; /* 禁用拖拉改變大小 */
-  padding: 8px 12px;
-  border: 1px solid #ddd;
-  border-radius: 8px;
-  transition: border-color 0.3s, box-shadow 0.3s;
-  font-size: 1.8rem; /* 放大金額數字 */
-  font-weight: 700;
-  color: #1a1a1a;
-  text-align: right;
-  line-height: 1.2;
-}
-
-.price-input:focus {
-  border-color: #2260ff; /* 藍色焦點邊框 */
-  box-shadow: 0 0 0 3px rgba(34, 96, 255, 0.2);
-  outline: none;
-  background-color: #fff;
-}
-
-/* 子分類標籤 (單選按鈕) 樣式 */
-.remarks-grid {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 10px;
-  padding-top: 5px;
-}
-
-.remark-input-label {
-  position: relative;
-  cursor: pointer;
-}
-
-/* 沿用原有的 radio-input 隱藏邏輯 */
-.radio-input {
-  clip: rect(0 0 0 0);
-  clip-path: inset(100%);
-  height: 1px;
-  position: absolute;
-  white-space: nowrap;
-  width: 1px;
-}
-
-.radio-tile-modern {
-  background: #e9e9e9; /* 淺灰色背景 */
-  color: #444;
-  padding: 8px 15px;
-  border-radius: 20px;
-  font-size: 0.9rem;
-  font-weight: 500;
-  transition: background 0.2s, border 0.2s;
-  border: 2px solid transparent;
-  display: block; /* 確保它能響應點擊 */
-}
-
-/* 選中狀態 */
-.radio-input:checked + .radio-tile-modern {
-  background: #4a90e2; /* 藍色背景 */
-  color: white;
-  border: 2px solid #2260ff;
-  box-shadow: 0 4px 10px rgba(74, 144, 226, 0.3);
-}
-
-.radio-tile-modern:hover {
-  background: #d4d4d4;
-}
-
-/* 底部操作按鈕樣式 */
-.action-buttons {
-  display: flex;
-  justify-content: center; /* 置中 */
-  gap: 15px;
-  margin-top: auto;
-  padding-top: 20px;
-  border-top: 1px solid #f0f0f0;
-}
-
-.btn {
-  flex: 0 0 180px; /* 限制寬度 */
-  padding: 12px 20px;
-  border: none;
-  border-radius: 10px;
-  font-size: 1.1rem;
-  font-weight: 600;
-  cursor: pointer;
-  transition: background-color 0.3s, transform 0.1s, box-shadow 0.3s;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-}
-
-.btn-save {
-  background-color: #4caf50; /* 綠色，代表新增/確認 */
-  color: white;
-  box-shadow: 0 4px 15px rgba(76, 175, 80, 0.4);
-}
-
-.btn-save:hover {
-  background-color: #45a049;
-}
-
-.btn:active {
-  transform: scale(0.98);
-}
-</style>

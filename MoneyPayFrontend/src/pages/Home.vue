@@ -1,16 +1,25 @@
 <template>
   <div class="q-pa-md">
-    <div v-if="loading">載入中...</div>
+    <div v-if="loading" class="text-center text-cyber">
+      <q-spinner-matrix size="50px" color="primary" />
+      <div class="q-mt-sm">SYSTEM LOADING...</div>
+    </div>
+    
     <div v-else>
-      <div v-if="moneyStore.list.length == 0">目前沒有付費種類</div>
+      <div v-if="moneyStore.list.length == 0" class="text-center text-cyber q-mt-xl">
+        NO_DATA_FOUND // 請新增類別
+      </div>
+      
       <div v-else>
-        
-        <span style="display: flex; justify-content: center">本月</span>
-        <div class="expenseTitle">
-          <span style="display: flex; justify-content: center; padding: 20px">
-            支出 ${{ moneyStore.totalExpense }}
-          </span>
+        <div class="hud-header">:: CURRENT_CYCLE ::</div>
+
+        <div class="expense-panel">
+          <div class="panel-label">TOTAL_EXPENSE</div>
+          <div class="panel-value text-red-13">
+            -${{ moneyStore.totalExpense }}
+          </div>
         </div>
+
         <div class="btnGrid">
           <MoneyTypeButton
             v-for="type in moneyStore.expenseList"
@@ -20,9 +29,15 @@
           />
         </div>
 
-        <span style="display: flex; justify-content: center; padding: 20px">
-           收入 ${{ moneyStore.totalIncome }}
-        </span>
+        <q-separator color="grey-9" class="q-my-lg" />
+
+        <div class="expense-panel">
+          <div class="panel-label">TOTAL_INCOME</div>
+          <div class="panel-value text-green-13">
+            +${{ moneyStore.totalIncome }}
+          </div>
+        </div>
+
         <div class="btnGrid">
           <MoneyTypeButton
             v-for="type in moneyStore.incomeList"
@@ -41,6 +56,49 @@
   </div>
 </template>
 
+<style scoped>
+.btnGrid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr); 
+  gap: 10px; /*稍微縮小間距，讓排列更緊湊像儀表板*/
+}
+
+.text-cyber {
+  color: var(--cyber-neon);
+  letter-spacing: 2px;
+}
+
+.hud-header {
+  text-align: center;
+  color: #555;
+  letter-spacing: 4px;
+  margin-bottom: 20px;
+  font-size: 0.8rem;
+  border-bottom: 1px dashed #333;
+  padding-bottom: 5px;
+}
+
+.expense-panel {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-left: 2px solid #333;
+  padding-left: 10px;
+  margin-bottom: 15px;
+  background: linear-gradient(90deg, rgba(255,255,255,0.03) 0%, transparent 100%);
+}
+
+.panel-label {
+  font-size: 0.9rem;
+  color: #888;
+}
+
+.panel-value {
+  font-size: 1.5rem;
+  font-weight: bold;
+  text-shadow: 0 0 10px rgba(0,0,0,0.5);
+}
+</style>
 <script setup>
 import { onMounted, ref } from "vue";
 // 1. 移除 apiComposables，改引入 Store
@@ -86,10 +144,3 @@ onMounted(() => {
 // 原本的 expenseTypes, incomeTypes 等 computed 都不需要了
 // 原本的 fetchMoneyTypes 不需要了
 </script>
-<style scoped>
-.btnGrid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr); /* 每行三個 */
-  gap: 12px; /* 按鈕間距 */
-}
-</style>

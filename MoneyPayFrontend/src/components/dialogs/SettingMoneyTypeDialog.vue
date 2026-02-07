@@ -1,78 +1,288 @@
 <template>
   <div v-if="modelValue" class="overlay">
-    <div class="dialog">
-      <button class="closeBtn" @click="closeDialog">
-        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <line x1="18" y1="6" x2="6" y2="18"></line>
-          <line x1="6" y1="6" x2="18" y2="18"></line>
-        </svg>
-      </button>
-
-      <h3 class="dialog-title">編輯分類</h3>
-
-      <div class="content-section">
-        <p class="section-title">分類資訊</p>
-
-        <div class="detail-row editable">
-          <label for="typeName" class="detail-label">名稱：</label>
-          <input
-            id="typeName"
-            type="text"
-            v-model="editingName"
-            class="input-editable"
-            placeholder="請輸入分類名稱"
-          />
-        </div>
-
-        <div class="detail-row">
-          <span class="detail-label">圖標：</span>
-          <q-icon
-            v-if="type?.icon"
-            class="detail-value icon-display"
-            :style="{ background: type.color }"
-            style="padding: 5px"
-            :name="type.icon"
-            size="24px"
-            color="white"
-          />
-        </div>
+    <div class="dialog" :style="{ '--theme-color': type?.color || '#00ffcc' }">
+      
+      <div class="dialog-header">
+        <span class="header-deco">SYSTEM_CONFIG //</span>
+        <span class="header-text">EDIT_MODE</span>
+        <button class="closeBtn" @click="closeDialog">[ ESC ]</button>
       </div>
 
-      <div class="content-section remarks-section">
-        <p class="section-title">子分類管理：</p>
+      <div class="scroll-area">
         
-        <div class="add-remark-row">
-          <input 
-            v-model="newRemarkText" 
-            class="remark-input" 
-            placeholder="輸入新子分類..." 
-            @keyup.enter="handleAddRemark"
-          />
-          <button class="btn-small" @click="handleAddRemark">新增</button>
-        </div>
-
-        <div class="remarks-grid">
-          <div v-for="remark in currentRemarks" :key="remark.remarkId" class="remark-tag-wrapper">
-            <span class="remark-tag">{{ remark.remark }}</span>
-            <span class="delete-x" @click="handleDeleteRemark(remark.remarkId)">×</span>
-          </div>
+        <div class="section-group">
+          <div class="section-label">:: BASIC_INFO</div>
           
-          <div v-if="currentRemarks.length === 0" style="color:#999; font-size:12px; width:100%;">
-            暫無子分類
+          <div class="input-row">
+            <label class="cyber-label">TYPE_NAME</label>
+            <input
+              type="text"
+              v-model="editingName"
+              class="cyber-input"
+              placeholder="ENTER_NAME..."
+            />
+          </div>
+
+          <div class="input-row q-mt-md">
+            <label class="cyber-label">ICON_PREVIEW</label>
+            <div class="icon-preview-box">
+              <q-icon
+                v-if="type?.icon"
+                :name="type.icon"
+                size="32px"
+                class="preview-icon"
+              />
+              <span class="hex-code">{{ type?.color }}</span>
+            </div>
           </div>
         </div>
-      </div>
 
-      <div class="action-buttons">
-        <button class="btn btn-save" @click="handleSave">
-          <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path><polyline points="17 21 17 13 7 13 7 21"></polyline><polyline points="7 3 7 8 15 8"></polyline></svg>
-          儲存變更
+        <div class="section-group">
+          <div class="section-label">:: SUB_CATEGORIES</div>
+          
+          <div class="add-remark-row">
+            <input 
+              v-model="newRemarkText" 
+              class="cyber-input flex-grow" 
+              placeholder="NEW_TAG_NAME..." 
+              @keyup.enter="handleAddRemark"
+            />
+            <button class="btn-add-tag" @click="handleAddRemark">
+              <q-icon name="add" /> ADD
+            </button>
+          </div>
+
+          <div class="remarks-grid">
+            <div v-for="remark in currentRemarks" :key="remark.remarkId" class="cyber-tag">
+              <span class="tag-text">{{ remark.remark }}</span>
+              <button class="tag-delete" @click="handleDeleteRemark(remark.remarkId)">×</button>
+            </div>
+            
+            <div v-if="currentRemarks.length === 0" class="empty-state">
+              // NULL_DATA: NO_SUB_CATEGORIES
+            </div>
+          </div>
+        </div>
+      
+      </div> <div class="action-footer">
+        <button class="btn-save" @click="handleSave">
+          <span class="save-text">SAVE_CHANGES</span>
+          <div class="loading-bar"></div>
         </button>
       </div>
+
     </div>
   </div>
 </template>
 
+<style scoped>
+/* 遮罩 */
+.overlay {
+  position: fixed;
+  inset: 0;
+  background-color: rgba(0, 0, 0, 0.85);
+  backdrop-filter: blur(5px);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+}
+
+/* 彈窗本體 - 終端機風格 */
+.dialog {
+  background: #0a0a0a;
+  border: 1px solid var(--theme-color);
+  width: 90%;
+  max-width: 450px;
+  max-height: 85vh;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  box-shadow: 0 0 30px rgba(0,0,0,0.8), inset 0 0 20px rgba(0,0,0,0.5);
+}
+
+/* 頂部標題 */
+.dialog-header {
+  padding: 15px 20px;
+  border-bottom: 1px solid #333;
+  display: flex;
+  align-items: center;
+  background: rgba(255,255,255,0.02);
+}
+
+.header-deco { color: #555; margin-right: 10px; }
+.header-text { color: var(--theme-color); font-weight: bold; letter-spacing: 2px; flex-grow: 1;}
+
+.closeBtn {
+  background: none;
+  border: none;
+  color: #666;
+  cursor: pointer;
+  font-family: 'Share Tech Mono', monospace;
+  transition: color 0.3s;
+}
+.closeBtn:hover { color: #fff; }
+
+/* 捲動區域 */
+.scroll-area {
+  padding: 20px;
+  overflow-y: auto;
+  flex-grow: 1;
+}
+
+/* 分區樣式 */
+.section-group {
+  margin-bottom: 30px;
+  border-left: 2px solid #222;
+  padding-left: 15px;
+}
+
+.section-label {
+  color: #888;
+  font-size: 0.9rem;
+  margin-bottom: 15px;
+  letter-spacing: 1px;
+}
+
+/* Cyber Input 樣式 */
+.cyber-label {
+  display: block;
+  color: var(--theme-color);
+  font-size: 0.8rem;
+  margin-bottom: 5px;
+  opacity: 0.8;
+}
+
+.cyber-input {
+  width: 100%;
+  background: transparent;
+  border: none;
+  border-bottom: 1px solid #444;
+  color: white;
+  padding: 8px 0;
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 1.1rem;
+  transition: all 0.3s;
+}
+
+.cyber-input:focus {
+  border-bottom-color: var(--theme-color);
+  box-shadow: 0 5px 5px -5px var(--theme-color);
+}
+
+/* Icon Preview */
+.icon-preview-box {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  padding: 10px;
+  border: 1px solid #222;
+  background: rgba(0,0,0,0.3);
+}
+.preview-icon { color: var(--theme-color); filter: drop-shadow(0 0 5px var(--theme-color)); }
+.hex-code { color: #555; font-size: 0.9rem; }
+
+/* 子分類管理 */
+.add-remark-row {
+  display: flex;
+  gap: 10px;
+  align-items: flex-end;
+  margin-bottom: 20px;
+}
+
+.flex-grow { flex-grow: 1; }
+
+.btn-add-tag {
+  background: #222;
+  border: 1px solid #444;
+  color: white;
+  padding: 8px 15px;
+  cursor: pointer;
+  font-family: 'Share Tech Mono', monospace;
+  transition: all 0.2s;
+}
+.btn-add-tag:hover {
+  border-color: var(--theme-color);
+  color: var(--theme-color);
+}
+
+/* 標籤矩陣 */
+.remarks-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.cyber-tag {
+  display: flex;
+  align-items: center;
+  border: 1px solid var(--theme-color);
+  background: rgba(0,0,0,0.5);
+  padding: 5px 10px;
+  color: #eee;
+  font-size: 0.9rem;
+  box-shadow: 0 0 5px rgba(0,0,0,0.2);
+}
+
+.tag-text { margin-right: 8px; }
+
+.tag-delete {
+  background: transparent;
+  border: none;
+  color: #666;
+  cursor: pointer;
+  font-weight: bold;
+  font-size: 1.1rem;
+  line-height: 1;
+}
+.tag-delete:hover { color: #ff4d4d; }
+
+.empty-state { color: #444; font-size: 0.8rem; font-style: italic; }
+
+/* 底部按鈕 */
+.action-footer {
+  padding: 20px;
+  border-top: 1px solid #333;
+}
+
+.btn-save {
+  width: 100%;
+  padding: 15px;
+  background: var(--theme-color);
+  border: none;
+  position: relative;
+  cursor: pointer;
+  overflow: hidden;
+}
+
+.save-text {
+  color: #000;
+  font-weight: bold;
+  font-size: 1.1rem;
+  letter-spacing: 2px;
+  position: relative;
+  z-index: 2;
+}
+
+.loading-bar {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 4px;
+  background: rgba(255,255,255,0.5);
+  transform: translateX(-100%);
+  transition: transform 0.3s;
+}
+
+.btn-save:hover .loading-bar {
+  transform: translateX(0);
+}
+
+.btn-save:hover {
+  box-shadow: 0 0 20px var(--theme-color);
+}
+</style>
 <script setup>
 import { ref, watch, computed } from "vue";
 import { useMoneyStore } from "../../stores/moneyStore";
@@ -134,89 +344,3 @@ const closeDialog = () => {
   emit('update:modelValue', false);
 };
 </script>
-
-<style scoped>
-/* 讓背景變黑色的遮罩 */
-.overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-color: rgba(0, 0, 0, 0.5); /* 半透明黑 */
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  z-index: 9999; /* 確保在最上層 */
-}
-
-/* 彈窗本體 */
-.dialog {
-  background: white;
-  padding: 20px;
-  border-radius: 12px;
-  width: 90%;
-  max-width: 400px;
-  position: relative;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
-  max-height: 80vh; /* 避免太高超出螢幕 */
-  overflow-y: auto; /* 內容太多可捲動 */
-}
-
-/* 關閉按鈕 */
-.closeBtn {
-  position: absolute;
-  top: 10px;
-  right: 10px;
-  background: none;
-  border: none;
-  cursor: pointer;
-  color: #666;
-}
-
-/* 其他輸入框樣式 */
-.input-editable, .remark-input {
-  width: 100%;
-  padding: 8px;
-  margin-top: 5px;
-  border: 1px solid #ddd;
-  border-radius: 4px;
-}
-
-.remarks-grid {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-  margin-top: 10px;
-}
-
-.remark-tag-wrapper {
-  background: #f0f0f0;
-  padding: 4px 10px;
-  border-radius: 16px;
-  font-size: 14px;
-  display: flex;
-  align-items: center;
-  gap: 5px;
-}
-
-.delete-x {
-  cursor: pointer;
-  color: #999;
-  font-weight: bold;
-}
-.delete-x:hover {
-  color: red;
-}
-
-.btn-save {
-  margin-top: 20px;
-  width: 100%;
-  padding: 10px;
-  background-color: #4CAF50;
-  color: white;
-  border: none;
-  border-radius: 6px;
-  cursor: pointer;
-}
-</style>

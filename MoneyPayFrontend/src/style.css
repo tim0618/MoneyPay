@@ -1,60 +1,139 @@
-/* 1. CSS Reset & 全域設定 */
+/* =========================================
+   0. 引入數位感字型
+   ========================================= */
+@import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap');
+
+/* 定義變數：方便統一管理顏色 */
+:root {
+    --cyber-black: #050505;       /* APP 背景黑 */
+    --cyber-dark: #000000;        /* 電腦兩側背景黑 */
+    --cyber-neon: #00ffcc;        /* 霓虹主色 */
+    --cyber-dim: rgba(0, 255, 204, 0.1); /* 微弱發光 */
+}
+
+/* =========================================
+   1. CSS Reset & 全域設定 (邏輯保留，外觀修改)
+   ========================================= */
 * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
-    /* 禁止手機上長按選取文字 (更像原生 App)，輸入框除外 */
+    /* 保留：禁止手機上長按選取文字 */
     -webkit-user-select: none;
     user-select: none;
-    /* 讓觸控點擊更靈敏 */
+    /* 保留：讓觸控點擊更靈敏 */
     -webkit-tap-highlight-color: transparent;
+    
+    /* 新增：強制去除藍色外框 */
+    outline: none;
 }
 
-/* 恢復輸入框的文字選取功能 */
+/* 恢復輸入框的文字選取功能，並強制設定字體 */
 input, textarea {
     -webkit-user-select: auto;
     user-select: auto;
+    font-family: 'Share Tech Mono', monospace; /* 數位字體 */
+    color: var(--cyber-neon); /* 輸入文字變霓虹色 */
+    caret-color: var(--cyber-neon); /* 游標變霓虹色 */
 }
 
 body, html {
     width: 100%;
-    /* 使用 100dvh (Dynamic Viewport Height) 解決手機瀏覽器網址列伸縮問題 */
+    /* 保留：解決手機瀏覽器網址列伸縮問題 */
     min-height: 100dvh;
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-    /* 讓字體在 iOS 上更清晰 */
+
+    touch-action: pan-x pan-y; 
+    
+    /* 防止 iOS 點擊輸入框時自動放大 */
+    text-size-adjust: 100%;
+    -webkit-text-size-adjust: 100%;
+    
+    /* 修改：字體改為數位風格 */
+    font-family: 'Share Tech Mono', monospace, -apple-system, sans-serif;
     -webkit-font-smoothing: antialiased;
     
-    /* 電腦版背景色 (讓中間的 App 區塊更明顯) */
-    background-color: #f0f2f5; 
+    /* 修改：電腦版兩側背景色 (改成全黑) */
+    background-color: var(--cyber-dark); 
+    /* 新增：加上網格線裝飾 (Sci-Fi感) */
+    background-image: 
+        linear-gradient(rgba(0, 255, 204, 0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0, 255, 204, 0.03) 1px, transparent 1px);
+    background-size: 40px 40px;
 
-    /* 禁止下拉網頁時出現的空白橡皮筋效果 */
+    /* 保留：禁止下拉網頁時出現的空白橡皮筋效果 */
     overscroll-behavior-y: none;
+    
+    /* 新增：全域文字顏色 */
+    color: var(--cyber-neon);
 }
 
-/* 2. App 主容器 */
+/* =========================================
+   2. App 主容器 (邏輯保留，外觀修改)
+   ========================================= */
 .app-container {
     width: 100%;
-    max-width: 450px; /* 手機版寬度限制 */
+    max-width: 450px; /* 保留：手機版寬度限制 */
     
-    /* 確保容器至少佔滿整個螢幕 */
+    /* 保留：確保容器至少佔滿整個螢幕 */
     min-height: 100dvh; 
     
-    margin: 0 auto; /* 電腦版置中 */
-    background-color: #fff; /* App 內容背景 */
+    margin: 0 auto; /* 保留：電腦版置中 */
+    
+    /* 修改：App 內容背景 (白 -> 黑) */
+    background-color: var(--cyber-black); 
     
     display: flex;
     flex-direction: column;
 
-    /* 3. 關鍵：針對 iPhone X 以上的瀏海與底部橫條做避讓 */
+    /* 保留：針對 iPhone X 以上的瀏海與底部橫條做避讓 */
     padding-top: env(safe-area-inset-top);
     padding-bottom: env(safe-area-inset-bottom);
     padding-left: env(safe-area-inset-left);
     padding-right: env(safe-area-inset-right);
 
-    /* 電腦版增加陰影，看起來更有層次感 */
-    box-shadow: 0 0 20px rgba(0, 0, 0, 0.05);
+    /* 修改：電腦版陰影 -> 改為發光邊框 */
+    box-shadow: 0 0 30px rgba(0, 255, 204, 0.15); 
+    border-left: 1px solid #111;
+    border-right: 1px solid #111;
     
-    /* 確保內容不會溢出 */
+    /* 保留：確保內容不會溢出 */
     position: relative;
     overflow-x: hidden;
+}
+
+/* =========================================
+   3. Quasar 元件強制覆寫 (新增區塊)
+   這區是為了讓你不用改 Vue 檔，就能自動變色
+   ========================================= */
+
+/* 強制卡片變黑底、直角 */
+.q-card {
+    background: rgba(10, 10, 10, 0.9) !important;
+    border: 1px solid var(--cyber-neon) !important;
+    border-radius: 0 !important;
+    box-shadow: 0 0 10px var(--cyber-dim) !important;
+}
+
+/* 輸入框底部線條顏色 */
+.q-field__native, .q-field__label {
+    color: var(--cyber-neon) !important;
+}
+/* 輸入框底線 */
+.q-field--outlined .q-field__control:before {
+    border: 1px solid #333 !important; /* 未選中時暗一點 */
+    border-radius: 0 !important;
+}
+.q-field--outlined .q-field__control:after {
+    border: 1px solid var(--cyber-neon) !important; /* 選中時發光 */
+}
+
+/* 按鈕樣式 */
+.q-btn {
+    border-radius: 0 !important;
+    font-weight: bold;
+}
+
+/* 讓所有 Material Icon 變霓虹色 */
+.q-icon {
+    color: var(--cyber-neon) !important;
 }

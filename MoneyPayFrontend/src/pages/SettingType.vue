@@ -1,45 +1,55 @@
 <template>
-  <div class="card">
-    <div class="cardContent">
-      <span>支出</span>
-      <span @click="handleAddType">+</span>
+  <div class="cyber-panel">
+    <div class="panel-header">
+      <span class="header-title">>> EXPENSE_MODULE</span>
+      <button class="add-btn" @click="handleAddType">[ + ADD ]</button>
     </div>
-    <div
-      class="cardContent"
-      v-for="expenseType in moneyStore.expenseList"
-      :key="expenseType.typeId"
-    >
-      <span>
-        <q-icon
-          v-if="expenseType.icon"
-          style="padding: 5px 0px"
-          :name="expenseType.icon"
-          size="24px"
-          :style="{ color: expenseType.color }"
-        />
-        {{ expenseType.typeName }}
-      </span>
-      <span @click="openTypeDialog(expenseType)">...</span>
+    
+    <div class="panel-body">
+      <div
+        class="data-slot"
+        v-for="expenseType in moneyStore.expenseList"
+        :key="expenseType.typeId"
+        :style="{ '--slot-color': expenseType.color }"
+      >
+        <div class="slot-left">
+          <div class="icon-box">
+             <q-icon :name="expenseType.icon" size="20px" />
+          </div>
+          <span class="slot-name">{{ expenseType.typeName }}</span>
+        </div>
+        
+        <button class="config-btn" @click="openTypeDialog(expenseType)">
+          [ EDIT ]
+        </button>
+      </div>
     </div>
   </div>
 
-  <div class="card">
-    <div class="cardContent">
-      <span>收入</span>
-      <span @click="handleAddType">+</span>
+  <div class="cyber-panel">
+    <div class="panel-header">
+      <span class="header-title">>> INCOME_MODULE</span>
+      <button class="add-btn" @click="handleAddType">[ + ADD ]</button>
     </div>
-    <div class="cardContent" v-for="incomeType in moneyStore.incomeList">
-      <span>
-        <q-icon
-          v-if="incomeType.icon"
-          style="padding: 5px 0px"
-          :name="incomeType.icon"
-          size="24px"
-          :style="{ color: incomeType.color }"
-        />
-        {{ incomeType.typeName }}
-      </span>
-      <span @click="openTypeDialog(incomeType)">...</span>
+    
+    <div class="panel-body">
+      <div
+        class="data-slot"
+        v-for="incomeType in moneyStore.incomeList"
+        :key="incomeType.typeId"
+        :style="{ '--slot-color': incomeType.color }"
+      >
+        <div class="slot-left">
+          <div class="icon-box">
+             <q-icon :name="incomeType.icon" size="20px" />
+          </div>
+          <span class="slot-name">{{ incomeType.typeName }}</span>
+        </div>
+        
+        <button class="config-btn" @click="openTypeDialog(incomeType)">
+          [ EDIT ]
+        </button>
+      </div>
     </div>
   </div>
 
@@ -48,6 +58,115 @@
     :type="selectedType" 
   />
 </template>
+
+<style scoped>
+/* 1. 外層面板 (取代原本的 card) */
+.cyber-panel {
+  background-color: rgba(10, 15, 20, 0.9);
+  border: 1px solid #333;
+  margin: 20px 5%; /* 保持原本間距 */
+  position: relative;
+  /* 直角風格 */
+  border-radius: 0; 
+  box-shadow: 0 0 15px rgba(0, 0, 0, 0.5);
+}
+
+/* 頂部裝飾條 */
+.cyber-panel::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 2px;
+  background: linear-gradient(90deg, #00ffcc, transparent);
+}
+
+/* 2. 標題區塊 */
+.panel-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px 20px;
+  border-bottom: 1px dashed #333;
+  background: rgba(255, 255, 255, 0.02);
+}
+
+.header-title {
+  color: #00ffcc;
+  font-size: 1.1rem;
+  letter-spacing: 2px;
+  font-weight: bold;
+}
+
+.add-btn {
+  background: transparent;
+  border: 1px solid #00ffcc;
+  color: #00ffcc;
+  padding: 5px 10px;
+  cursor: pointer;
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 0.9rem;
+  transition: all 0.3s;
+}
+
+.add-btn:hover {
+  background: #00ffcc;
+  color: black;
+  box-shadow: 0 0 10px #00ffcc;
+}
+
+/* 3. 列表內容區 */
+.panel-body {
+  padding: 10px;
+}
+
+/* 每一列數據槽 */
+.data-slot {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 10px;
+  margin-bottom: 5px;
+  border-left: 2px solid var(--slot-color); /* 左側顏色條 */
+  background: linear-gradient(90deg, rgba(255,255,255,0.03) 0%, transparent 100%);
+  transition: background 0.2s;
+}
+
+.data-slot:hover {
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.slot-left {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.icon-box {
+  color: var(--slot-color);
+  filter: drop-shadow(0 0 5px var(--slot-color));
+}
+
+.slot-name {
+  color: #eee;
+  font-size: 1.1rem;
+  letter-spacing: 1px;
+}
+
+.config-btn {
+  background: transparent;
+  border: none;
+  color: #666;
+  cursor: pointer;
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 0.9rem;
+}
+.config-btn:hover {
+  color: var(--slot-color);
+  text-shadow: 0 0 5px var(--slot-color);
+}
+</style>
 
 <script setup>
 import { onMounted, ref } from "vue";
@@ -78,24 +197,3 @@ const handleAddType = () => {
   alert('新增分類功能待實作'); 
 };
 </script>
-
-<style>
-.card {
-  background-color: rgb(255, 255, 255);
-  border-radius: 8px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  padding: 20px 0px;
-  margin: 5%;
-  gap: 13px;
-  box-shadow: 2px 2px 20px rgba(0, 0, 0, 0.062);
-}
-.cardContent {
-  width: 100%;
-  display: flex;
-  justify-content: space-between;
-  padding: 0px 10%;
-}
-</style>

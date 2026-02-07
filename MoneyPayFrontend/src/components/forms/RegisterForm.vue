@@ -38,24 +38,9 @@ const handleRegister = async () => {
       alert("請輸入完整資料");
       return;
     }
-    const result = await registerApi({
-      email: email.value,
-      password: password.value,
-      name: name.value,
-    });
-    if (result == "Registration Successful") {
-      alert("註冊成功");
+    if (true) {
+      alert("demo，此功能暫不開放");
       router.push("/login");
-    } else if (result == "Email Already Registered") {
-      email.value = "";
-      password.value = "";
-      name.value = "";
-      alert("Email 已被註冊");
-    } else {
-      email.value = "";
-      password.value = "";
-      name.value = "";
-      alert("註冊失敗");
     }
   } catch (e) {
     console.error("Login error", e);
