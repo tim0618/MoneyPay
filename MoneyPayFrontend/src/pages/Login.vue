@@ -1,80 +1,101 @@
 <template>
-  <div
-    class="q-pa-md flex flex-center app-container"
-    style="height: 100vh; width: 100vw; flex-direction: column"
-  >
-    <div class="radio-inputs">
-      <label class="radio">
-        <input type="radio" name="radio" value="login" v-model="activeTab" />
-        <span class="name">Login</span>
-      </label>
+  <div class="authPage pixel-page">
+    <section class="authShell pixel-card">
+      <div class="tabRow">
+        <button
+          class="tabButton"
+          :class="{ active: activeTab === 'login' }"
+          type="button"
+          @click="activeTab = 'login'"
+        >
+          {{ t("auth.login") }}
+        </button>
+        <button
+          class="tabButton"
+          :class="{ active: activeTab === 'register' }"
+          type="button"
+          @click="activeTab = 'register'"
+        >
+          {{ t("auth.register") }}
+        </button>
+      </div>
 
-      <label class="radio">
-        <input type="radio" name="radio" value="regidter" v-model="activeTab" />
-        <span class="name">Register</span>
-      </label>
-    </div>
-
-    <!-- Tab -->
-    <div
-      style="
-        width: 100%;
-        margin-top: 20px;
-        display: flex;
-        justify-content: center;
-      "
-    >
-      <LoginForm v-if="activeTab === 'login'" />
-      <RegisterForm v-else />
-    </div>
+      <div class="formWrap">
+        <LoginForm v-if="activeTab === 'login'" />
+        <RegisterForm v-else />
+      </div>
+    </section>
   </div>
 </template>
+
 <script setup>
+import { ref } from "vue";
 import LoginForm from "../components/forms/LoginForm.vue";
 import RegisterForm from "../components/forms/RegisterForm.vue";
-import { ref } from "vue";
+import { useAppPreferences } from "../composables/useAppPreferences";
 
-const activeTab = ref("login"); // 預設顯示 Login
+const activeTab = ref("login");
+const { t } = useAppPreferences();
 </script>
+
 <style scoped>
-.radio-inputs {
-  position: relative;
+.authPage {
+  width: 100%;
+  min-height: 100vh;
+  min-height: 100dvh;
   display: flex;
-  flex-wrap: wrap;
-  border-radius: 0.5rem;
-  background-color: #eee;
-  box-sizing: border-box;
-  box-shadow: 0 0 0px 1px rgba(0, 0, 0, 0.06);
-  padding: 0.25rem;
-  max-width: 400px;
-  width: 90%;
-
-  font-size: 14px;
-}
-
-.radio-inputs .radio {
-  flex: 1 1 auto;
-  text-align: center;
-}
-
-.radio-inputs .radio input {
-  display: none;
-}
-
-.radio-inputs .radio .name {
-  display: flex;
-  cursor: pointer;
-  align-items: center;
+  flex-direction: column;
   justify-content: center;
-  border-radius: 0.5rem;
-  border: none;
-  padding: 0.5rem 0;
-  color: rgba(51, 65, 85, 1);
-  transition: all 0.15s ease-in-out;
 }
 
-.radio-inputs .radio input:checked + .name {
-  background-color: #fff;
-  font-weight: 600;
+.authShell {
+  padding: 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.authKicker {
+  color: var(--muted);
+  font-size: 0.78rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.authTitle {
+  font-size: 1.45rem;
+  font-weight: 700;
+}
+
+.authSubtitle {
+  color: var(--muted);
+  font-size: 0.84rem;
+  line-height: 1.6;
+}
+
+.tabRow {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.tabButton {
+  border: var(--pixel-border) solid var(--border);
+  border-radius: 8px;
+  background: var(--surface-soft);
+  color: var(--text);
+  padding: 12px 14px;
+  cursor: pointer;
+  font-weight: 700;
+  box-shadow: 2px 2px 0 var(--shadow);
+}
+
+.tabButton.active {
+  background: var(--accent);
+  color: var(--accent-contrast);
+}
+
+.formWrap {
+  min-height: 320px;
 }
 </style>

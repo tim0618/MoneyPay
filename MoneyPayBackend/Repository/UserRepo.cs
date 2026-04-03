@@ -12,7 +12,7 @@ public class UserRepo : IUserRepo
         _context = context;
     }
 
-    public UserModel GetUserByEmail(string email)
+    public UserModel? GetUserByEmail(string email)
     {
         return _context.Users.FirstOrDefault(u => u.email == email)!;
     }
@@ -20,6 +20,12 @@ public class UserRepo : IUserRepo
     public bool AddUser(UserModel user)
     {
         _context.Users.Add(user);
+        return _context.SaveChanges() > 0;
+    }
+
+    public bool UpdateUser(UserModel user)
+    {
+        _context.Users.Update(user);
         return _context.SaveChanges() > 0;
     }
 

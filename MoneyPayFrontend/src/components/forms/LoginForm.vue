@@ -1,43 +1,58 @@
 <template>
-  <q-card flat bordered class="my-card" style="width: 90%; max-width: 400px">
-    <q-card-section>
-      <div class="text-h6">登入</div>
-    </q-card-section>
+  <form class="authForm" @submit.prevent="handleLogin">
+    <label class="field-stack">
+      <span class="field-label">{{ t("auth.email") }}</span>
+      <input
+        v-model.trim="email"
+        class="pixel-input"
+        type="email"
+        autocomplete="email"
+        placeholder="name@example.com"
+      />
+    </label>
 
-    <q-card-section class="q-pt-none">
-      <q-input v-model="email" label="Email" outlined />
-    </q-card-section>
-    <q-card-section>
-      <q-input v-model="password" type="password" label="Password" outlined />
-    </q-card-section>
-    <q-card-section class="flex flex-center">
-      <q-btn label="Login" outlined @click="handleLogin" />
-    </q-card-section>
-  </q-card>
+    <label class="field-stack">
+      <span class="field-label">{{ t("auth.password") }}</span>
+      <input
+        v-model="password"
+        class="pixel-input"
+        type="password"
+        autocomplete="current-password"
+        placeholder="******"
+      />
+    </label>
+
+    <button class="pixel-button submitButton" type="submit">
+      {{ t("auth.loginButton") }}
+    </button>
+  </form>
 </template>
 
 <script setup>
 import { ref } from "vue";
-import { auth } from "../../apiComposables/userAuthApiComposables";
-import { useRouter } from "vue-router";
 import { jwtDecode } from "jwt-decode";
+import { useRouter } from "vue-router";
+import { auth } from "../../apiComposables/userAuthApiComposables";
+import { useAppPreferences } from "../../composables/useAppPreferences";
 
 const email = ref("");
 const password = ref("");
 const router = useRouter();
-
 const { loginApi } = auth();
+const { t } = useAppPreferences();
 
 const handleLogin = async () => {
   try {
-    if (email.value === "" || password.value === "") {
-      alert("請輸入完整資料");
+    if (!email.value || !password.value) {
+      window.alert(t("auth.missingFields"));
       return;
     }
+
     const result = await loginApi({
       email: email.value,
       password: password.value,
     });
+
     if (result.token) {
       localStorage.setItem("token", result.token);
 
@@ -45,19 +60,49 @@ const handleLogin = async () => {
       localStorage.setItem("name", decoded.name);
       localStorage.setItem("userEmail", decoded.userEmail);
       router.push("/home");
-    } else if (result.message == "Not Registered Yet") {
+      return;
+    }
+
+    if (result.message === "Not Registered Yet") {
       email.value = "";
       password.value = "";
-      alert("尚未註冊");
-    } else if (result.message == "Wrong Password") {
-      password.value = "";
-      alert("密碼錯誤");
+      window.alert(t("auth.notRegistered"));
+      return;
     }
-  } catch (e) {
-    console.error("Login error", e);
+
+    if (result.message === "Wrong Password") {
+      password.value = "";
+      window.alert(t("auth.wrongPassword"));
+      return;
+    }
+  } catch (error) {
+    console.error("Login error", error);
     email.value = "";
     password.value = "";
-    alert("登入失敗");
+    window.alert(t("auth.loginError"));
   }
 };
 </script>
+
+<style scoped>
+.authForm {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.formTitle {
+  font-size: 1.12rem;
+  font-weight: 700;
+}
+
+.formHint {
+  color: var(--muted);
+  font-size: 0.84rem;
+  line-height: 1.6;
+}
+
+.submitButton {
+  margin-top: 6px;
+}
+</style>

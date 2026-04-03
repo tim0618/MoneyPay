@@ -29,6 +29,149 @@ namespace MoneyPayBackend.Controller
         }
 
         [Authorize]
+        [HttpGet("GetMoneyTypes")]
+        public IActionResult GetMoneyTypes([FromQuery] string? type = null)
+        {
+            try
+            {
+                var result = _typeService.GetMoneyTypes(userEmail, type);
+                return Ok(result);
+            }
+            catch (ArgumentException ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        [Authorize]
+        [HttpGet("GetDeletedMoneyTypes")]
+        public IActionResult GetDeletedMoneyTypes([FromQuery] string? type = null)
+        {
+            try
+            {
+                var result = _typeService.GetDeletedMoneyTypes(userEmail, type);
+                return Ok(result);
+            }
+            catch (ArgumentException ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        [Authorize]
+        [HttpPost("CreateMoneyType")]
+        public IActionResult CreateMoneyType(CreateMoneyTypeRequest createMoneyTypeRequest)
+        {
+            try
+            {
+                var result = _typeService.CreateMoneyType(userEmail, createMoneyTypeRequest);
+                return Ok(result);
+            }
+            catch (ArgumentException ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        [Authorize]
+        [HttpPost("CreateSubMoneyType/{parentId}")]
+        public IActionResult CreateSubMoneyType(int parentId, CreateSubMoneyTypeRequest createSubMoneyTypeRequest)
+        {
+            try
+            {
+                var result = _typeService.CreateSubMoneyType(userEmail, parentId, createSubMoneyTypeRequest);
+                return Ok(result);
+            }
+            catch (KeyNotFoundException ex)
+            {
+                return NotFound(ex.Message);
+            }
+            catch (ArgumentException ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        [Authorize]
+        [HttpPut("UpdateSubMoneyType/{subCategoryId}")]
+        public IActionResult UpdateSubMoneyType(int subCategoryId, UpdateSubMoneyTypeRequest updateSubMoneyTypeRequest)
+        {
+            try
+            {
+                var result = _typeService.UpdateSubMoneyType(userEmail, subCategoryId, updateSubMoneyTypeRequest);
+                return Ok(result);
+            }
+            catch (KeyNotFoundException ex)
+            {
+                return NotFound(ex.Message);
+            }
+            catch (ArgumentException ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        [Authorize]
+        [HttpDelete("DeleteMoneyType/{typeId}")]
+        public IActionResult DeleteMoneyType(int typeId)
+        {
+            try
+            {
+                var result = _typeService.DeleteMoneyType(userEmail, typeId);
+                return result ? NoContent() : NotFound("Category not found");
+            }
+            catch (ArgumentException ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        [Authorize]
+        [HttpDelete("DeleteSubMoneyType/{subCategoryId}")]
+        public IActionResult DeleteSubMoneyType(int subCategoryId)
+        {
+            try
+            {
+                var result = _typeService.DeleteSubMoneyType(userEmail, subCategoryId);
+                return result ? NoContent() : NotFound("Subcategory not found");
+            }
+            catch (ArgumentException ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        [Authorize]
+        [HttpPut("RestoreMoneyType/{typeId}")]
+        public IActionResult RestoreMoneyType(int typeId)
+        {
+            try
+            {
+                var result = _typeService.RestoreMoneyType(userEmail, typeId);
+                return result ? NoContent() : NotFound("Category not found");
+            }
+            catch (ArgumentException ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        [Authorize]
+        [HttpPut("RestoreSubMoneyType/{subCategoryId}")]
+        public IActionResult RestoreSubMoneyType(int subCategoryId)
+        {
+            try
+            {
+                var result = _typeService.RestoreSubMoneyType(userEmail, subCategoryId);
+                return result ? NoContent() : NotFound("Subcategory not found");
+            }
+            catch (ArgumentException ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        [Authorize]
         [HttpGet("GetTypeRemark/{typeId}")]
         public IActionResult GetTypeRemarkById(int typeId)
         {

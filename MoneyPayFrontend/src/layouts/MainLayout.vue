@@ -1,181 +1,136 @@
 <template>
-  <q-layout view="hHh lpR fFf">
-    <q-page-container>
+  <q-layout view="hHh lpR fFf" class="mainLayout">
+    <q-page-container class="pageContainer">
       <router-view />
     </q-page-container>
-    <q-footer class="bg-transparent" style="height: 10vh">
-      <div id="navbody">
-        <form action="#">
-          <ul class="ul">
-            <input
-              checked=""
-              name="rad"
-              class="radio"
-              id="choose1"
-              type="radio"
-            />
-            <label for="choose1" @click="goHome">
-              <li class="li">
-                <svg
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  height="24"
-                  width="24"
-                  xmlns="http://www.w3.org/2000/svg"
-                  aria-hidden="true"
-                  class="svg w-6 h-6 text-gray-800 dark:text-white"
-                >
-                  <path
-                    d="m4 12 8-8 8 8M6 10.5V19a1 1 0 0 0 1 1h3v-3a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v3h3a1 1 0 0 0 1-1v-8.5"
-                    stroke-width="2"
-                    stroke-linejoin="round"
-                    stroke-linecap="round"
-                    stroke="currentColor"
-                  ></path>
-                </svg>
-              </li>
-            </label>
-            <input class="radio" name="rad" id="choose2" type="radio" />
-            <label for="choose2" @click="goSettingType">
-              <li class="li">
-                <svg
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  height="24"
-                  width="24"
-                  xmlns="http://www.w3.org/2000/svg"
-                  aria-hidden="true"
-                  class="svg w-6 h-6 text-gray-800 dark:text-white"
-                >
-                  <path
-                    d="m17 21-5-4-5 4V3.889a.92.92 0 0 1 .244-.629.808.808 0 0 1 .59-.26h8.333a.81.81 0 0 1 .589.26.92.92 0 0 1 .244.63V21Z"
-                    stroke-width="2"
-                    stroke-linejoin="round"
-                    stroke-linecap="round"
-                    stroke="currentColor"
-                  ></path>
-                </svg>
-              </li>
-            </label>
-            <input class="radio" name="rad" id="choose3" type="radio" />
-            <label for="choose3" @click="goGraphics">
-              <li class="li">
-                <svg
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  height="24"
-                  width="24"
-                  xmlns="http://www.w3.org/2000/svg"
-                  aria-hidden="true"
-                  class="svg w-6 h-6 text-gray-800 dark:text-white"
-                >
-                  <path
-                    d="m21 21-3.5-3.5M17 10a7 7 0 1 1-14 0 7 7 0 0 1 14 0Z"
-                    stroke-width="2"
-                    stroke-linecap="round"
-                    stroke="currentColor"
-                  ></path>
-                </svg>
-              </li>
-            </label>
-            <input class="radio" name="rad" id="choose4" type="radio" />
-            <label for="choose4" @click="goUserSetting">
-              <li class="li">
-                <svg
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  height="24"
-                  width="24"
-                  xmlns="http://www.w3.org/2000/svg"
-                  aria-hidden="true"
-                  class="svg w-6 h-6 text-gray-800 dark:text-white"
-                >
-                  <path
-                    d="M10 19H5a1 1 0 0 1-1-1v-1a3 3 0 0 1 3-3h2m10 1a3 3 0 0 1-3 3m3-3a3 3 0 0 0-3-3m3 3h1m-4 3a3 3 0 0 1-3-3m3 3v1m-3-4a3 3 0 0 1 3-3m-3 3h-1m4-3v-1m-2.121 1.879-.707-.707m5.656 5.656-.707-.707m-4.242 0-.707.707m5.656-5.656-.707.707M12 8a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z"
-                    stroke-width="2"
-                    stroke-linejoin="round"
-                    stroke-linecap="square"
-                    stroke="currentColor"
-                  ></path>
-                </svg>
-              </li>
-            </label>
-          </ul>
-        </form>
-      </div>
-    </q-footer>
+
+    <div class="floatingNavWrap">
+      <nav class="navShell pixel-card" :aria-label="t('nav.home')">
+        <button
+          v-for="item in navItems"
+          :key="item.path"
+          class="navItem"
+          :class="{ active: isActive(item.path) }"
+          type="button"
+          @click="goTo(item.path)"
+        >
+          <q-icon :name="item.icon" size="22px" />
+          <span class="navLabel">{{ item.label }}</span>
+        </button>
+      </nav>
+    </div>
   </q-layout>
 </template>
 
 <script setup>
-import { useRouter } from "vue-router";
+import { computed } from "vue";
+import { useRoute, useRouter } from "vue-router";
+import { useAppPreferences } from "../composables/useAppPreferences";
 
 const router = useRouter();
-const goHome = () => {
-  router.push("/home");
+const route = useRoute();
+const { t } = useAppPreferences();
+
+const navItems = computed(() => [
+  { path: "/home", label: t("nav.home"), icon: "home" },
+  { path: "/settingType", label: t("nav.categories"), icon: "bookmark" },
+  { path: "/graphics", label: t("nav.insights"), icon: "bar_chart" },
+  { path: "/userSetting", label: t("nav.settings"), icon: "settings" },
+]);
+
+const goTo = (path) => {
+  if (route.path === path) {
+    return;
+  }
+
+  router.push(path);
 };
-const goSettingType = () => {
-  router.push("/settingType");
-};
-const goGraphics = () => {
-  router.push("/graphics");
-};
-const goUserSetting = () => {
-  router.push("/userSetting");
-};
+
+const isActive = (path) => route.path === path;
 </script>
 
 <style scoped>
-#navbody {
-  height: 100%;
-  background-color: transparent;
-  align-items: flex-end;
+.mainLayout {
+  background: transparent;
+  min-height: 100vh;
+  min-height: 100dvh;
+  --footer-offset: calc(env(safe-area-inset-bottom, 0px) + 12px);
+}
+
+.pageContainer {
+  min-height: 100vh;
+  min-height: 100dvh;
+  padding-bottom: calc(var(--bottom-nav-height) + var(--footer-offset) + 22px) !important;
+}
+
+.floatingNavWrap {
+  position: fixed;
+  left: 50%;
+  bottom: var(--footer-offset);
+  transform: translateX(-50%);
+  width: min(calc(100vw - 20px), calc(var(--app-max-width) - 20px));
+  width: min(calc(100dvw - 20px), calc(var(--app-max-width) - 20px));
+  z-index: 2000;
+  pointer-events: none;
+}
+
+.navShell {
+  width: 100%;
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 8px;
+  padding: 10px;
+  pointer-events: auto;
+  background: var(--surface);
+}
+
+.navItem {
+  min-width: 0;
+  min-height: 62px;
+  border: var(--pixel-border) solid transparent;
+  border-radius: 8px;
+  background: transparent;
+  color: var(--muted);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
   justify-content: center;
-  display: flex;
-  padding-bottom: 20px;
-}
-
-.ul {
-  background-color: white;
-  width: auto;
-  min-width: 300px;
-  border-radius: 50px;
-  box-shadow: 0px 10px 15px rgba(0, 0, 0, 0.3);
-  list-style: none;
-  display: flex;
-  justify-content: space-between;
-  padding: 0 20px;
-  margin: 0;
-}
-
-.ul .li {
-  display: inline-block;
-}
-
-.radio {
-  display: none;
-}
-
-.svg {
-  color: black;
-  width: 70px;
-  height: 70px;
-  opacity: 80%;
+  gap: 4px;
   cursor: pointer;
-  padding: 13px 20px;
-  transition: 0.2s;
 }
 
-.ul .li .svg:hover {
-  transition: 0.1s;
-  color: rgb(235, 40, 176);
-  position: relative;
-  margin-top: -4px;
-  opacity: 100%;
+.navItem.active {
+  background: var(--accent);
+  color: var(--accent-contrast);
+  border-color: var(--border);
+  box-shadow: 2px 2px 0 var(--shadow);
 }
 
-.radio:checked + label .li .svg {
-  color: rgb(235, 40, 176);
-  fill-rule: evenodd;
+.navLabel {
+  font-size: 0.72rem;
+  font-weight: 700;
+}
+
+@media (max-width: 420px) {
+  .pageContainer {
+    padding-bottom: calc(var(--bottom-nav-height) + var(--footer-offset) + 16px) !important;
+  }
+
+  .navShell {
+    gap: 6px;
+    padding: 8px;
+  }
+
+  .navItem {
+    min-height: 58px;
+  }
+
+  .floatingNavWrap {
+    width: calc(100dvw - 16px);
+  }
+
+  .navLabel {
+    font-size: 0.66rem;
+  }
 }
 </style>

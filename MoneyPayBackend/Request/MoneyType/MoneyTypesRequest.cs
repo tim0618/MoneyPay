@@ -3,7 +3,6 @@ namespace MoneyPayBackend.Request
     public class MoneyTypesRequest
     {
         public int moneyTypeId { get; set; }
-        public string? email { get; set; }
         public string? typeName { get; set; }
         public string? icon { get; set; }
         public string? color { get; set; }

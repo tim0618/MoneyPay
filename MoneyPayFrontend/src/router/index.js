@@ -26,7 +26,7 @@ const routes = [
     path: "/graphics",
     component: MainLayout,
     children: [{ path: "", component: Graphics }],
-  },
+  },  
   {
     path: "/userSetting",
     component: MainLayout,

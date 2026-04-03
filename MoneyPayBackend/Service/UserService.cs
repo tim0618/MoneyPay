@@ -13,10 +13,12 @@ namespace MoneyPayBackend.Service;
 
 public class UserService : IUserService
 {
+    private readonly MoneyPayDBContext _context;
     private readonly IUserRepo _userRepo;
     private readonly ITypeRepo _typeRepo;
-    public UserService(IUserRepo userRepo, ITypeRepo typeRepo)
+    public UserService(MoneyPayDBContext context, IUserRepo userRepo, ITypeRepo typeRepo)
     {
+        _context = context;
         _userRepo = userRepo;
         _typeRepo = typeRepo;
     }
@@ -24,6 +26,8 @@ public class UserService : IUserService
     {
         var existingUser = _userRepo.GetUserByEmail(registerRequest.email);
         if (existingUser != null) return "Email Already Registered";
+
+        using var transaction = _context.Database.BeginTransaction();
 
         var newUser = new UserModel
         {
@@ -33,14 +37,34 @@ public class UserService : IUserService
             createTime = DateTime.Now
         };
 
-        if (_userRepo.AddUser(newUser))
+        try
         {
-            if (!_typeRepo.AddDefaultTypesForUser(newUser.email)) return "AddDefaultTypesForUser Error";
-            if (!_typeRepo.AddDefaultTypeRemarksForUser(newUser.email)) return "AddDefaultTypeRemarksForUser Error";
+            if (!_userRepo.AddUser(newUser))
+            {
+                transaction.Rollback();
+                return "Registration Failed";
+            }
 
+            if (!_typeRepo.AddDefaultTypesForUser(newUser.userId))
+            {
+                transaction.Rollback();
+                return "AddDefaultTypesForUser Error";
+            }
+
+            if (!_typeRepo.AddDefaultTypeRemarksForUser(newUser.userId))
+            {
+                transaction.Rollback();
+                return "AddDefaultTypeRemarksForUser Error";
+            }
+
+            transaction.Commit();
             return "Registration Successful";
         }
-        return "Registration Failed";
+        catch
+        {
+            transaction.Rollback();
+            return "Registration Failed";
+        }
     }
 
     public LoginResponse Login(LoginRequest loginRequest)
@@ -49,6 +73,63 @@ public class UserService : IUserService
         if (userData == null) return new LoginResponse { message = "Not Registered Yet" };
         if (HashPassword(loginRequest.password) != userData.password) return new LoginResponse { message = "Wrong Password" };
         return new LoginResponse { token = GenerateJwtToken(userData) };
+    }
+
+    public GetUserProfileResponse GetProfile(string userEmail)
+    {
+        var userData = _userRepo.GetUserByEmail(userEmail);
+        if (userData == null)
+        {
+            throw new KeyNotFoundException("User not found");
+        }
+
+        return MapUserProfile(userData);
+    }
+
+    public GetUserProfileResponse UpdateProfile(string userEmail, UpdateUserProfileRequest updateUserProfileRequest)
+    {
+        var userData = _userRepo.GetUserByEmail(userEmail);
+        if (userData == null)
+        {
+            throw new KeyNotFoundException("User not found");
+        }
+
+        if (string.IsNullOrWhiteSpace(updateUserProfileRequest.name))
+        {
+            throw new ArgumentException("Name is required");
+        }
+
+        userData.name = updateUserProfileRequest.name.Trim();
+        _userRepo.UpdateUser(userData);
+        return MapUserProfile(userData);
+    }
+
+    public bool ChangePassword(string userEmail, ChangePasswordRequest changePasswordRequest)
+    {
+        var userData = _userRepo.GetUserByEmail(userEmail);
+        if (userData == null)
+        {
+            throw new KeyNotFoundException("User not found");
+        }
+
+        if (string.IsNullOrWhiteSpace(changePasswordRequest.currentPassword) ||
+            string.IsNullOrWhiteSpace(changePasswordRequest.newPassword))
+        {
+            throw new ArgumentException("Password is required");
+        }
+
+        if (HashPassword(changePasswordRequest.currentPassword) != userData.password)
+        {
+            throw new ArgumentException("Current password is incorrect");
+        }
+
+        if (changePasswordRequest.currentPassword == changePasswordRequest.newPassword)
+        {
+            throw new ArgumentException("New password must be different");
+        }
+
+        userData.password = HashPassword(changePasswordRequest.newPassword);
+        return _userRepo.UpdateUser(userData);
     }
 
     private string HashPassword(string password)
@@ -92,5 +173,15 @@ public class UserService : IUserService
         return new JwtSecurityTokenHandler().WriteToken(token);
     }
 
+    private static GetUserProfileResponse MapUserProfile(UserModel userData)
+    {
+        return new GetUserProfileResponse
+        {
+            userId = userData.userId,
+            email = userData.email ?? string.Empty,
+            name = userData.name ?? string.Empty,
+            createTime = userData.createTime
+        };
+    }
 
 }

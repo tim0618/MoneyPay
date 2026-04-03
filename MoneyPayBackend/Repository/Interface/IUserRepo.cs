@@ -4,6 +4,7 @@ namespace MoneyPayBackend.IRepo;
 
 public interface IUserRepo
 {
-    UserModel GetUserByEmail(string email);
+    UserModel? GetUserByEmail(string email);
     bool AddUser(UserModel user);
+    bool UpdateUser(UserModel user);
 }

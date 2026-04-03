@@ -69,6 +69,8 @@ builder.Services.AddScoped<IUserRepo, UserRepo>();
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<ITypeRepo, TypeRepo>();
 builder.Services.AddScoped<ITypeService, TypeService>();
+builder.Services.AddScoped<IHomeRepo, HomeRepo>();
+builder.Services.AddScoped<IHomeService, HomeService>();
 builder.Services.AddScoped<IUserRecordRepo, UserRecordRepo>();
 builder.Services.AddScoped<IUserRecordService, UserRecordService>();
 
@@ -99,7 +101,12 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-app.UseHttpsRedirection();
+// Keep local development requests on HTTP so the Vite app can call the API
+// without being redirected before the controller is reached.
+if (!app.Environment.IsDevelopment())
+{
+    app.UseHttpsRedirection();
+}
 
 app.UseAuthentication();  // 🔑先驗證身份
 app.UseAuthorization();   // 🔑再檢查權限
